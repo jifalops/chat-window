@@ -1,0 +1,85 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="chat-messages.html">
+<link rel="import" href="chat-input.html">
+
+<!--
+`chat-window`
+A simple and flexible chat window for listing messages.
+
+@demo demo/index.html
+-->
+
+<dom-module id="chat-window">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .container {
+        @apply(--chat-window);
+      }
+      chat-messages {
+        @apply(--chat-window-messages);
+      }
+      chat-input {
+        @apply(--chat-window-input);
+      }
+    </style>
+
+    <div class="container">
+      <content select=".chat-header"></content>
+      <chat-messages author="[[author]]" messages="[[messages]]"></chat-messages>
+      <content select=".chat-footer"></content>
+      <content select=".chat-input"></content>
+      <template is="dom-if" if=[[!_hasCustomInput()]]>
+		    <chat-input single-line=[[singleLine]]></chat-input>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'chat-window',
+
+      properties: {
+        /**
+         * Whether to allow single line messages only. This option has no effect
+         * if using a custom input element.
+         */
+        singleLine: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * The messages array. Each element must have three properties:
+         * * `author`: The message's author
+         * * `text`: The actual message
+         * * `timestamp`: The timestamp in millis the message was sent.
+         */
+        messages: {
+          type: Array,
+          value: function() { return []; }
+        },
+
+        /**
+         * The author is compared to each message's author to determine how that
+         * message should be displayed. If the message's author matches, the
+         * default is to display it using flexbox's self-end alignment.
+         */
+        author: String
+      },
+
+      _hasCustomInput: function () {
+        var distributed = Polymer.dom(this).childNodes;
+				for (var i = 0; i < distributed.length; i++) {
+          if (distributed[i].className && distributed[i].className.includes('chat-input')) {
+            return true;
+          }
+				}
+        return false;
+			}
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,67 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<!--
+`chat-window`
+A simple and flexible chat window for listing messages.
+
+@demo demo/index.html
+-->
+
+<dom-module id="chat-input">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+      paper-input, paper-textarea {
+        @apply(--layout-flex);
+      }
+    </style>
+    <paper-input hidden$="[[!singleLine]]" value={{text}}></paper-input>
+    <paper-textarea hidden$="[[singleLine]]" value={{text}}></paper-textarea>
+    <paper-icon-button icon="send" on-tap="_fireSendEvent"></paper-icon-button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'chat-input',
+
+      properties: {
+        /**
+         * Whether to allow single line messages only. Internally a paper-input
+         * will be used instead of a paper-textarea.
+         */
+        singleLine: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * The text inside the input field.
+         */
+        text: {
+          type: String,
+          notify: true
+        }
+      },
+
+      _fireSendEvent: function(e) {
+        // console.log('firing send event...', this.text);
+        this.fire('send', this.text);
+      }
+
+      /**
+       * Triggered when a user taps the send button.
+       * @event send
+       * @param {text} string The message to be sent.
+       */
+    });
+  </script>
+</dom-module>

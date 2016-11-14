@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <title>chat-window demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../chat-window.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic chat-window Demo</h3>
+
+      No options, uses the default input field.
+      <demo-snippet>
+        <template>
+          <chat-window></chat-window>
+        </template>
+      </demo-snippet>
+
+      Single line input
+      <demo-snippet>
+        <template>
+          <chat-window single-line></chat-window>
+        </template>
+      </demo-snippet>
+
+      With a header, footer, and custom input field.
+      <demo-snippet>
+        <template>
+          <chat-window>
+            <div class="chat-header">Header</div>
+            <div class="chat-footer">Footer</div>
+            <div class="chat-input"><input /></div>
+          </chat-window>
+        </template>
+      </demo-snippet>
+
+
+      <h3>Complete chat-window Demo</h3>
+
+      Send events.
+      <demo-snippet>
+        <template is="dom-bind" id="scope">
+          <chat-window
+            id="cssdemo"
+            author="me"
+            messages="[[messages]]"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope = document.getElementById('scope');
+            scope.messages = [];
+            scope.sendMsg = function(e, text) {
+              // For demo purposes
+              scope.author = scope.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope.author,
+                text: text,
+                timestamp: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope.push('messages', msg);
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+
+    </div>
+
+  </body>
+</html>

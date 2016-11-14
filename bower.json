@@ -1,0 +1,26 @@
+{
+  "name": "chat-window",
+  "description": "A simple and flexible chat window for listing messages.",
+  "main": "chat-window.html",
+  "license": "MIT",
+  "keywords": [
+    "web-components",
+    "chat-window",
+    "chat",
+    "window",
+    "messages",
+    "input"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-input": "^1.1.20",
+    "from-now": "from-to-now#^0.1.2",
+    "paper-dialog-scrollable": "^1.1.5"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

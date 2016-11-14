@@ -1,0 +1,147 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../from-now/from-now.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<!--
+`chat-window`
+A simple and flexible chat window for listing messages.
+
+@demo demo/index.html
+-->
+
+<dom-module id="chat-messages">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dialog-scrollable {
+        height: 5em;
+        height: @apply(--chat-window-messages-height);
+      }
+      .message {
+        @apply(--layout-vertical);
+        @apply(--chat-window-message);
+      }
+      .time, .text {
+        /*@apply(--layout-horizontal);*/
+      }
+      from-now {
+        @apply(--layout-self-center);
+        @apply(--chat-window-message-time);
+      }
+      .text-container {
+        @apply(--layout-horizontal);
+      }
+      .text {
+        max-width: 90%;
+        @apply(--layout-self-start);
+        @apply(--chat-window-message-text);
+      }
+      .text.self {
+        @apply(--layout-self-end);
+      }
+    </style>
+
+    <paper-dialog-scrollable id="scroller">
+      <template is="dom-repeat" items="[[messages]]">
+        <div class="message">
+          <!-- <div class="time"> -->
+          <template is="dom-if" if="[[_showTime(item.timestamp)]]">
+            <from-now time=[[item.timestamp]]></from-now>
+          </template>
+          <!-- </div> -->
+          <!-- <div class="text-container"> -->
+            <div class$="[[_classForAuthor(item.author)]] text">[[item.text]]</div>
+          <!-- </div> -->
+        </div>
+      </template>
+    </paper-dialog-scrollable>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'chat-messages',
+
+      properties: {
+        /**
+         * The author is compared to each message's author to determine how that
+         * message should be displayed. If the message's author matches, the
+         * default is to display it using flexbox's self-end alignment.
+         */
+        author: String,
+
+        /**
+         * The messages array. Each element must have three properties:
+         * * `author`: The message's author
+         * * `text`: The actual message
+         * * `timestamp`: The timestamp in millis the message was sent.
+         */
+        messages: {
+          type: Array,
+          value: function() { return []; }
+        },
+
+        /**
+         * Whether to show a timestamp with every message or just some of them.
+         */
+        showAllTimestamps: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Whether to scroll to the bottom of the message list when a new message arrives.
+         */
+        autoScroll: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      observers: [
+        '_messagesChanged(messages.*)'
+      ],
+
+      _classForAuthor: function(author) {
+        return author == this.author ? 'self' : '';
+      },
+
+      _showTime: function(timestamp) {
+        if (this.showAllTimestamps) return true;
+
+        if (!this._lastTimestamp) {
+          this._lastTimestamp = timestamp;
+          return true;
+        }
+
+        var between = timestamp - this._lastTimestamp;
+        var age = Date.now() - timestamp;
+
+        if (age < 60 * 60 * 1000) {                  // If less than one hour old,
+          return between > 5 * 60 * 1000;            // show every 5 minutes.
+        } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
+          return between > 60 * 60 * 1000;           // show every hour.
+        } else if (age < 7 * 24 * 60 * 60 * 1000) {  // If less than a week old,
+          return between > 4 * 60 * 60 * 1000;       // show every four hours.
+        } else {                                     // If a week or older,
+          return between > 24 * 60 * 60 * 1000;      // show once per day.
+        }
+      },
+
+      _messagesChanged: function(changeData) {
+        // console.log('msg changed', changeData);
+        if (this.autoScroll) {
+          this.scrollToBottom();
+        }
+      },
+
+      scrollToBottom: function() {
+        var target = this.$.scroller.scrollTarget;
+        target.scrollTop = target.scrollHeight;
+      },
+    });
+  </script>
+</dom-module>
