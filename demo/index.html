@@ -37,9 +37,9 @@
       <demo-snippet>
         <template>
           <chat-window>
-            <div class="chat-header">Header</div>
-            <div class="chat-footer">Footer</div>
-            <div class="chat-input"><input /></div>
+            <div slot="chat-header">Header</div>
+            <div slot="chat-footer">Footer</div>
+            <div slot="chat-input"><input /></div>
           </chat-window>
         </template>
       </demo-snippet>
@@ -47,11 +47,53 @@
 
       <h3>Complete chat-window Demo</h3>
 
-      Send events.
+      Send events and styled.
       <demo-snippet>
         <template is="dom-bind" id="scope">
+          <style is="custom-style">
+            chat-window.styled {
+              --chat-window: {
+                border: 3px dashed green;
+              };
+              --chat-window-messages: {
+                border: 3px inset red;
+              };
+              --chat-window-input: {
+                background-color: #aaf;
+              };
+
+              --chat-messages-container: {
+                background-color: yellow;
+                height: 8em;
+              };
+
+              --chat-message {
+                background-color: pink;
+              };
+              --chat-message-time {
+                background-color: orange;
+              };
+              --chat-message-text {
+                font-style: italic;
+              };
+              --chat-message-text-me {
+                font-weight: bold;
+              };
+              --chat-message-text-not-me {
+                color: gray;
+              };
+
+
+              --chat-input-input {
+                background-color: magenta;
+              }
+              --chat-input-button {
+                color: cyan;
+              }
+            }
+          </style>
           <chat-window
-            id="cssdemo"
+            class="styled"
             author="me"
             messages="[[messages]]"
             on-send="sendMsg"></chat-window>
@@ -65,7 +107,7 @@
               var msg = {
                 author:  scope.author,
                 text: text,
-                timestamp: Date.now()
+                created: Date.now()
               }
               // console.log('sending...', msg);
               scope.push('messages', msg);

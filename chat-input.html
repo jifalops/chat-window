@@ -8,6 +8,14 @@
 `chat-window`
 A simple and flexible chat window for listing messages.
 
+Style hooks:
+
+* `--chat-input-input` Applied to the paper-input and paper-textarea, depending on
+the state of the `singleLine` property.
+
+* `--chat-input-button` Appied to the paper-icon-button
+
+
 @demo demo/index.html
 -->
 
@@ -16,16 +24,20 @@ A simple and flexible chat window for listing messages.
     <style>
       :host {
         display: block;
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
       }
       paper-input, paper-textarea {
-        @apply(--layout-flex);
+        @apply --layout-flex;
+        @apply --chat-input-input;
+      }
+      paper-icon-button {
+        @apply --chat-input-button;
       }
     </style>
     <paper-input hidden$="[[!singleLine]]" value={{text}}></paper-input>
     <paper-textarea hidden$="[[singleLine]]" value={{text}}></paper-textarea>
-    <paper-icon-button icon="send" on-tap="_fireSendEvent"></paper-icon-button>
+    <paper-icon-button noink icon="[[icon]]" on-tap="_fireSendEvent"></paper-icon-button>
   </template>
 
   <script>
@@ -49,7 +61,15 @@ A simple and flexible chat window for listing messages.
         text: {
           type: String,
           notify: true
-        }
+        },
+
+        /**
+         * The paper-icon-button's icon
+         */
+         icon: {
+           type: String,
+           value: 'send'
+         }
       },
 
       _fireSendEvent: function(e) {

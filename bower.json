@@ -12,9 +12,9 @@
     "input"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
-    "paper-input": "^1.1.20",
-    "from-now": "from-to-now#^0.1.2",
+    "polymer": "^1.8.0",
+    "paper-input": "^1.1.23",
+    "from-now": "^1.0.0",
     "paper-dialog-scrollable": "^1.1.5"
   },
   "devDependencies": {

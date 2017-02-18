@@ -7,6 +7,20 @@
 `chat-window`
 A simple and flexible chat window for listing messages.
 
+Style hooks:
+
+* `--chat-messages-container` Applied to the paper-dialog-scrollable.
+
+* `--chat-message`  Applied to the container of each message.
+
+* `--chat-message-time`  Applied to each timestamp shown.
+
+* `--chat-message-text`  Applied to the text of each message.
+
+* `--chat-message-text-me` Applied to the current user's messages.
+
+* `--chat-message-text-not-me` Applied to the other users' messages.
+
 @demo demo/index.html
 -->
 
@@ -18,29 +32,33 @@ A simple and flexible chat window for listing messages.
       }
       paper-dialog-scrollable {
         height: 5em;
-        height: @apply(--chat-window-messages-height);
+        @apply --chat-messages-container;
       }
       .message {
-        @apply(--layout-vertical);
-        @apply(--chat-window-message);
+        @apply --layout-vertical;
+        @apply --chat-message;
       }
       .time, .text {
-        /*@apply(--layout-horizontal);*/
+        /*@apply --layout-horizontal;*/
       }
       from-now {
-        @apply(--layout-self-center);
-        @apply(--chat-window-message-time);
+        @apply --layout-self-center;
+        @apply --chat-message-time;
       }
       .text-container {
-        @apply(--layout-horizontal);
+        @apply --layout-horizontal;
       }
       .text {
         max-width: 90%;
-        @apply(--layout-self-start);
-        @apply(--chat-window-message-text);
+        @apply --layout-self-start;
+        @apply --chat-message-text;
       }
-      .text.self {
-        @apply(--layout-self-end);
+      .text.me {
+        @apply --layout-self-end;
+        @apply --chat-message-text-me;
+      }
+      .text.not-me {
+        @apply --chat-message-text-not-me;
       }
     </style>
 
@@ -48,8 +66,8 @@ A simple and flexible chat window for listing messages.
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
           <!-- <div class="time"> -->
-          <template is="dom-if" if="[[_showTime(item.timestamp)]]">
-            <from-now time=[[item.timestamp]]></from-now>
+          <template is="dom-if" if="[[_showTime(item.created)]]">
+            <from-now time=[[item.created]]></from-now>
           </template>
           <!-- </div> -->
           <!-- <div class="text-container"> -->
@@ -77,7 +95,7 @@ A simple and flexible chat window for listing messages.
          * The messages array. Each element must have three properties:
          * * `author`: The message's author
          * * `text`: The actual message
-         * * `timestamp`: The timestamp in millis the message was sent.
+         * * `created`: The timestamp in millis the message was sent.
          */
         messages: {
           type: Array,
@@ -106,7 +124,7 @@ A simple and flexible chat window for listing messages.
       ],
 
       _classForAuthor: function(author) {
-        return author == this.author ? 'self' : '';
+        return author == this.author ? 'me' : 'not-me';
       },
 
       _showTime: function(timestamp) {

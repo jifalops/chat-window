@@ -6,6 +6,14 @@
 `chat-window`
 A simple and flexible chat window for listing messages.
 
+Style hooks:
+
+* `--chat-window` Applied to the chat-window container.
+
+* `--chat-window-messages` Applied to the chat-messages element.
+
+* `--chat-window-input` Applied to the chat-input element.
+
 @demo demo/index.html
 -->
 
@@ -16,21 +24,21 @@ A simple and flexible chat window for listing messages.
         display: block;
       }
       .container {
-        @apply(--chat-window);
+        @apply --chat-window;
       }
       chat-messages {
-        @apply(--chat-window-messages);
+        @apply --chat-window-messages;
       }
       chat-input {
-        @apply(--chat-window-input);
+        @apply --chat-window-input;
       }
     </style>
 
     <div class="container">
-      <content select=".chat-header"></content>
+      <slot name="chat-header"></slot>
       <chat-messages author="[[author]]" messages="[[messages]]"></chat-messages>
-      <content select=".chat-footer"></content>
-      <content select=".chat-input"></content>
+      <slot name="chat-footer"></slot>
+      <slot name="chat-input"></slot>
       <template is="dom-if" if=[[!_hasCustomInput()]]>
 		    <chat-input single-line=[[singleLine]]></chat-input>
       </template>
@@ -56,7 +64,7 @@ A simple and flexible chat window for listing messages.
          * The messages array. Each element must have three properties:
          * * `author`: The message's author
          * * `text`: The actual message
-         * * `timestamp`: The timestamp in millis the message was sent.
+         * * `created`: The timestamp in millis the message was sent.
          */
         messages: {
           type: Array,
@@ -74,7 +82,7 @@ A simple and flexible chat window for listing messages.
       _hasCustomInput: function () {
         var distributed = Polymer.dom(this).childNodes;
 				for (var i = 0; i < distributed.length; i++) {
-          if (distributed[i].className && distributed[i].className.includes('chat-input')) {
+          if (distributed[i].slot == 'chat-input') {
             return true;
           }
 				}
