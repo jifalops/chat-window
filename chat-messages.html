@@ -157,8 +157,10 @@ Style hooks:
       },
 
       scrollToBottom: function() {
-        var target = this.$.scroller.scrollTarget;
-        target.scrollTop = target.scrollHeight;
+        setTimeout(function() {
+          var target = this.$.scroller.scrollTarget;
+          target.scrollTop = target.scrollHeight;
+        }.bind(this), 100);
       },
     });
   </script>

@@ -35,8 +35,18 @@ the state of the `singleLine` property.
         @apply --chat-input-button;
       }
     </style>
-    <paper-input hidden$="[[!singleLine]]" value="{{text}}" on-keydown="_checkForEnter"></paper-input>
-    <paper-textarea hidden$="[[singleLine]]" value="{{text}}" on-keydown="_checkForEnter"></paper-textarea>
+    <paper-input
+      no-label-float
+      hidden$="[[!singleLine]]"
+      value="{{text}}"
+      on-keydown="_checkForEnter">
+    </paper-input>
+    <paper-textarea
+      no-label-float
+      hidden$="[[singleLine]]"
+      value="{{text}}"
+      on-keydown="_checkForEnter">
+    </paper-textarea>
     <paper-icon-button noink icon="[[_getIcon(icon)]]" src="[[_getSrc(icon)]]" on-tap="_fireSendEvent"></paper-icon-button>
   </template>
 
