@@ -34,7 +34,11 @@ Style hooks:
 
     <div class="container">
       <slot name="chat-header"></slot>
-      <chat-messages author="[[author]]" messages="[[messages]]"></chat-messages>
+      <chat-messages
+        author="[[author]]"
+        messages="[[messages]]"
+        auto-scroll="[[autoScroll]]">          
+      </chat-messages>
       <slot name="chat-footer"></slot>
       <slot name="chat-input"></slot>
       <template is="dom-if" if="[[!_hasCustomInput()]]">
@@ -102,8 +106,17 @@ Style hooks:
          * The default behavior is to send-on-enter when in single-line input mode,
          * and not send if in multiline input mode.
          */
-        sendOnEnter: Boolean
+        sendOnEnter: Boolean,
+
+        /**
+         * Whether to scroll to the bottom when the messages change.
+         */
+        autoScroll: {
+          type: Boolean,
+          value: true
+        }
       },
+
 
       _hasCustomInput: function () {
         var distributed = Polymer.dom(this).childNodes;
