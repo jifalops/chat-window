@@ -42,6 +42,8 @@ Style hooks:
         /*@apply --layout-horizontal;*/
       }
       from-now {
+        font-size small;
+        color: gray;
         @apply --layout-self-center;
         @apply --chat-message-time;
       }
@@ -135,7 +137,7 @@ Style hooks:
           return true;
         }
 
-        var between = timestamp - this._lastTimestamp;        
+        var between = timestamp - this._lastTimestamp;
         var age = Date.now() - timestamp;
 
         this._lastTimestamp = timestamp;
