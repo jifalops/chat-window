@@ -52,50 +52,56 @@
         <template is="dom-bind" id="scope">
           <style is="custom-style">
             chat-window.styled {
+
               --chat-window: {
                 border: 3px dashed green;
-              };
-              --chat-window-messages: {
-                border: 3px inset red;
               };
               --chat-window-input: {
                 background-color: #aaf;
               };
 
-              --chat-messages-container: {
-                background-color: yellow;
-                height: 8em;
-              };
 
-              --chat-message {
-                background-color: pink;
+              --chat-messages-height: 8em;
+              --chat-messages-scroller: {
+                background-color: yellow;
+                border: 3px inset red;
               };
-              --chat-message-time {
+              --chat-message: {
+                background-color: pink;
+                margin: 2px;
+              };
+              --chat-message-time: {
                 background-color: orange;
               };
-              --chat-message-text {
+              --chat-message-text: {
                 font-style: italic;
               };
-              --chat-message-text-me {
+              --chat-message-text-me: {
                 font-weight: bold;
               };
-              --chat-message-text-not-me {
+              --chat-message-text-not-me: {
                 color: gray;
               };
 
 
-              --chat-input-input {
+              --chat-input-input: {
                 background-color: magenta;
+                margin: 4px;
               }
-              --chat-input-button {
+              --chat-input-button: {
                 color: cyan;
+                height: 48px;
+                width: 48px;
               }
             }
           </style>
           <chat-window
             class="styled"
             author="me"
+            single-line
+            input-text="{{text}}"
             messages="[[messages]]"
+            send-icon="https://upload.wikimedia.org/wikipedia/commons/4/42/Cute-Ball-Go-icon.png"
             on-send="sendMsg"></chat-window>
           <script>
             var scope = document.getElementById('scope');
@@ -111,11 +117,39 @@
               }
               // console.log('sending...', msg);
               scope.push('messages', msg);
+              scope.text = '';
             };
           </script>
         </template>
       </demo-snippet>
 
+      Send events multiline.
+      <demo-snippet>
+        <template is="dom-bind" id="scope2">
+          <chat-window
+            author="me"
+            input-text="{{text}}"
+            messages="[[messages]]"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope2 = document.getElementById('scope2');
+            scope2.messages = [];
+            scope2.sendMsg = function(e, text) {
+              // For demo purposes
+              scope2.author = scope2.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope2.author,
+                text: text,
+                created: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope2.push('messages', msg);
+              scope2.text = '';
+            };
+          </script>
+        </template>
+      </demo-snippet>
 
     </div>
 

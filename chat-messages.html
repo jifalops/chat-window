@@ -9,7 +9,7 @@ A simple and flexible chat window for listing messages.
 
 Style hooks:
 
-* `--chat-messages-container` Applied to the paper-dialog-scrollable.
+* `--chat-messages-scroller` Applied to the paper-dialog-scrollable.
 
 * `--chat-message`  Applied to the container of each message.
 
@@ -31,8 +31,8 @@ Style hooks:
         display: block;
       }
       paper-dialog-scrollable {
-        height: 5em;
-        @apply --chat-messages-container;
+        height: var(--chat-messages-height, 5em);
+        @apply --chat-messages-scroller;
       }
       .message {
         @apply --layout-vertical;
@@ -50,7 +50,6 @@ Style hooks:
       }
       .text {
         max-width: 90%;
-        @apply --layout-self-start;
         @apply --chat-message-text;
       }
       .text.me {
@@ -58,6 +57,7 @@ Style hooks:
         @apply --chat-message-text-me;
       }
       .text.not-me {
+        @apply --layout-self-start;
         @apply --chat-message-text-not-me;
       }
     </style>
@@ -67,7 +67,7 @@ Style hooks:
         <div class="message">
           <!-- <div class="time"> -->
           <template is="dom-if" if="[[_showTime(item.created)]]">
-            <from-now time=[[item.created]]></from-now>
+            <from-now time="[[item.created]]"></from-now>
           </template>
           <!-- </div> -->
           <!-- <div class="text-container"> -->

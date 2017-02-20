@@ -10,8 +10,6 @@ Style hooks:
 
 * `--chat-window` Applied to the chat-window container.
 
-* `--chat-window-messages` Applied to the chat-messages element.
-
 * `--chat-window-input` Applied to the chat-input element.
 
 @demo demo/index.html
@@ -27,7 +25,7 @@ Style hooks:
         @apply --chat-window;
       }
       chat-messages {
-        @apply --chat-window-messages;
+        /*@apply --chat-window-messages;*/
       }
       chat-input {
         @apply --chat-window-input;
@@ -39,8 +37,12 @@ Style hooks:
       <chat-messages author="[[author]]" messages="[[messages]]"></chat-messages>
       <slot name="chat-footer"></slot>
       <slot name="chat-input"></slot>
-      <template is="dom-if" if=[[!_hasCustomInput()]]>
-		    <chat-input single-line=[[singleLine]]></chat-input>
+      <template is="dom-if" if="[[!_hasCustomInput()]]">
+		    <chat-input
+		      single-line="[[singleLine]]"
+		      icon="[[sendIcon]]"
+		      text="{{inputText}}"
+		      send-on-enter="[[sendOnEnter]]"></chat-input>
       </template>
     </div>
   </template>
@@ -57,7 +59,16 @@ Style hooks:
          */
         singleLine: {
           type: Boolean,
-          value: false
+          value: false,
+          reflectToAttribute: true
+        },
+
+        /**
+         * The value of the input field.
+         */
+        inputText: {
+          type: String,
+          notify: true
         },
 
         /**
@@ -76,7 +87,22 @@ Style hooks:
          * message should be displayed. If the message's author matches, the
          * default is to display it using flexbox's self-end alignment.
          */
-        author: String
+        author: String,
+
+        /**
+         * The paper-icon-button's `icon` or a URL to use as the paper-icon-button's `src`.
+         */
+        sendIcon: {
+          type: String,
+          value: 'send'
+        },
+
+        /**
+         * Whether to send the message when a user presses `enter` on the keyboard.
+         * The default behavior is to send-on-enter when in single-line input mode,
+         * and not send if in multiline input mode.
+         */
+        sendOnEnter: Boolean
       },
 
       _hasCustomInput: function () {

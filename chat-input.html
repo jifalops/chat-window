@@ -35,9 +35,9 @@ the state of the `singleLine` property.
         @apply --chat-input-button;
       }
     </style>
-    <paper-input hidden$="[[!singleLine]]" value={{text}}></paper-input>
-    <paper-textarea hidden$="[[singleLine]]" value={{text}}></paper-textarea>
-    <paper-icon-button noink icon="[[icon]]" on-tap="_fireSendEvent"></paper-icon-button>
+    <paper-input hidden$="[[!singleLine]]" value="{{text}}" on-keydown="_checkForEnter"></paper-input>
+    <paper-textarea hidden$="[[singleLine]]" value="{{text}}" on-keydown="_checkForEnter"></paper-textarea>
+    <paper-icon-button noink icon="[[_getIcon(icon)]]" src="[[_getSrc(icon)]]" on-tap="_fireSendEvent"></paper-icon-button>
   </template>
 
   <script>
@@ -64,17 +64,43 @@ the state of the `singleLine` property.
         },
 
         /**
-         * The paper-icon-button's icon
+         * The paper-icon-button's `icon` or a URL to use as the paper-icon-button's `src`.
          */
          icon: {
            type: String,
            value: 'send'
-         }
+         },
+
+         /**
+          * Whether to send the message when a user presses `enter` on the keyboard.
+          * The default behavior is to send-on-enter when in single-line input mode,
+          * and not send if in multiline input mode.
+          */
+         sendOnEnter: Boolean
       },
 
       _fireSendEvent: function(e) {
         // console.log('firing send event...', this.text);
         this.fire('send', this.text);
+      },
+
+      _getIcon: function(icon) {
+        return this._iconIsUrl(icon) ? '' : icon;
+      },
+
+      _getSrc: function(icon) {
+        return this._iconIsUrl(icon) ? icon : '';
+      },
+
+      _iconIsUrl: function(icon) {
+        return icon && icon.indexOf('/') !== -1;
+      },
+
+      _checkForEnter: function (e) {
+        if (e.keyCode === 13 &&
+            (this.sendOnEnter || (this.sendOnEnter === undefined && this.singleLine))) {
+          this._fireSendEvent();
+        }
       }
 
       /**
