@@ -66,9 +66,9 @@ Style hooks:
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
           <!-- <div class="time"> -->
-          <template is="dom-if" if="[[_showTime(item.created)]]">
-            <from-now time="[[item.created]]"></from-now>
-          </template>
+        <div hidden$="[[!_showTime(item.created)]]">
+          <from-now time="[[item.created]]"></from-now>
+        </div>
           <!-- </div> -->
           <!-- <div class="text-container"> -->
             <div class$="[[_classForAuthor(item.author)]] text">[[item.text]]</div>
@@ -135,8 +135,10 @@ Style hooks:
           return true;
         }
 
-        var between = timestamp - this._lastTimestamp;
+        var between = timestamp - this._lastTimestamp;        
         var age = Date.now() - timestamp;
+
+        this._lastTimestamp = timestamp;
 
         if (age < 60 * 60 * 1000) {                  // If less than one hour old,
           return between > 5 * 60 * 1000;            // show every 5 minutes.
