@@ -71,7 +71,7 @@ Style hooks:
           <!-- <div class="time"> -->
           <from-now
             time="[[item.created]]"
-            hidden$="[[!_indexesContains(_indexes, index)]]">
+            hidden$="[[!_indexesContains(_indexes, index, showAllTimestamps)]]">
           </from-now>
           <!-- </div> -->
           <!-- <div class="text-container"> -->
@@ -137,24 +137,25 @@ Style hooks:
       },
 
       observers: [
-        '_messagesChanged(messages, showAllTimestamps)'
+        '_messagesChanged(messages, messages.length, showAllTimestamps)'
       ],
 
       _classForAuthor: function(author) {
         return author == this.author ? 'me' : 'not-me';
       },
 
-      _messagesChanged: function(messages, showAllTimestamps) {
+      _messagesChanged: function(messages, len, showAllTimestamps) {
         // console.log('msg changed', changeData);
-        if (!messages) return;
-        if (this.autoScroll) {
-          this.scrollToBottom();
+        if (len > 0) {
+          if (this.autoScroll) {
+            this.scrollToBottom();
+          }
+          if (!showAllTimestamps) this._updateTimestampedIndexes(messages);
         }
-        if (!showAllTimestamps) this._updateTimestampedIndexes(messages);
       },
 
-      _indexesContains: function(indexes, index) {
-        return indexes && indexes.includes(index);
+      _indexesContains: function(indexes, index, showAllTimestamps) {
+        return showAllTimestamps || (indexes && indexes.includes(index));
       },
 
       _updateTimestampedIndexes: function(messages) {
