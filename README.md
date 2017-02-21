@@ -17,3 +17,7 @@ https://jifalops.github.io/chat-window
   * Show every hour if less than a day old,
   * Show every four hours if a less than a week old,
   * Otherwise show once per day.
+
+## TODO
+* Allow `author: msg` format instead of alignment based format.
+* Use material guidelines for showing relative vs absolute timestamps as well as their format.
