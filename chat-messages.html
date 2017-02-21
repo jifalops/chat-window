@@ -163,18 +163,18 @@ Style hooks:
       },
 
       _updateTimestampedIndexes: function(messages) {
-        // console.log('updating indexes...')
-        this._indexes = [0];
+        // console.log('updating indexes...', messages)
+        var indexes = [0];
         var i, age, between, now = Date.now();
         for (i = 1; i < messages.length; i++) {
           age = now - messages[i].created;
           between = messages[i].created - messages[i - 1].created;
           // console.log('index', i, 'age', age, 'between', between);
           if (this._shouldBeTimestamped(age, between)) {
-            this.push('_indexes', i);
+            indexes.push(i);
           }
-          // console.log('format example', this._formatTimestamp(messages[i].created));
         }
+        this._indexes = indexes;
         // console.log('indexes', this._indexes);
       },
 
