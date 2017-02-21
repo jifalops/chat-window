@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../from-now/from-now.html">
+<link rel="import" href="../from-now/moment-import.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 
@@ -68,12 +69,13 @@ Style hooks:
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
           <!-- <div class="time"> -->
-        <div hidden$="[[!_showTime(item.created)]]">
-          <from-now time="[[item.created]]"></from-now>
-        </div>
+          <from-now
+            time="[[item.created]]"
+            hidden$="[[!_indexesContains(_indexes, index)]]">
+          </from-now>
           <!-- </div> -->
           <!-- <div class="text-container"> -->
-            <div class$="[[_classForAuthor(item.author)]] text">[[item.text]]</div>
+            <div class$="[[_classForAuthor(item.author)]] text" title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
           <!-- </div> -->
         </div>
       </template>
@@ -118,30 +120,59 @@ Style hooks:
         autoScroll: {
           type: Boolean,
           value: true
+        },
+
+        /**
+         * The date format to use when revealing the actual timestamp.
+         * See https://momentjs.com/docs/#/parsing/string-format/
+         * Examples:
+         *   YYYY-MM-DD HH:mm:ss
+         *   MM/DD/YYYY hh:mm a
+         *   Do of MMM, YYYY at hh:mm a
+         */
+        dateFormat: {
+          type: String,
+          value: 'YYYY-MM-DD HH:mm'
         }
       },
 
       observers: [
-        '_messagesChanged(messages.*)'
+        '_messagesChanged(messages, showAllTimestamps)'
       ],
 
       _classForAuthor: function(author) {
         return author == this.author ? 'me' : 'not-me';
       },
 
-      _showTime: function(timestamp) {
-        if (this.showAllTimestamps) return true;
-
-        if (!this._lastTimestamp) {
-          this._lastTimestamp = timestamp;
-          return true;
+      _messagesChanged: function(messages, showAllTimestamps) {
+        // console.log('msg changed', changeData);
+        if (!messages) return;
+        if (this.autoScroll) {
+          this.scrollToBottom();
         }
+        if (!showAllTimestamps) this._updateTimestampedIndexes(messages);
+      },
 
-        var between = timestamp - this._lastTimestamp;
-        var age = Date.now() - timestamp;
+      _indexesContains: function(indexes, index) {
+        return indexes && indexes.includes(index);
+      },
 
-        this._lastTimestamp = timestamp;
+      _updateTimestampedIndexes: function(messages) {
+        this._indexes = [0];
+        var i, age, between, now = Date.now();
+        for (i = 1; i < messages.length - 1; i++) {
+          age = now - messages[i].created;
+          between = messages[i].created - messages[i - 1].created;
+          // console.log('index', i, 'age', age, 'between', between);
+          if (this._shouldBeTimestamped(age, between)) {
+            this.push('_indexes', i);
+          }
+          // console.log('format example', this._formatTimestamp(messages[i].created));
+        }
+        // console.log('indexes', this._indexes);
+      },
 
+      _shouldBeTimestamped: function(age, between) {
         if (age < 60 * 60 * 1000) {                  // If less than one hour old,
           return between > 5 * 60 * 1000;            // show every 5 minutes.
         } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
@@ -153,11 +184,8 @@ Style hooks:
         }
       },
 
-      _messagesChanged: function(changeData) {
-        // console.log('msg changed', changeData);
-        if (this.autoScroll) {
-          this.scrollToBottom();
-        }
+      _formatTimestamp: function(time) {
+        return moment(time).format(this.dateFormat);
       },
 
       scrollToBottom: function() {

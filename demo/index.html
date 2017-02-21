@@ -33,11 +33,10 @@
         </template>
       </demo-snippet>
 
-      With a header, footer, and custom input field.
+      With a footer (between messages and input) and a custom input field.
       <demo-snippet>
         <template>
           <chat-window>
-            <div slot="chat-header">Header</div>
             <div slot="chat-footer">Footer</div>
             <div slot="chat-input"><input /></div>
           </chat-window>
@@ -52,6 +51,71 @@
         <template is="dom-bind" id="scope">
           <style is="custom-style">
             chat-window.styled {
+                font-size: small;
+                --chat-messages-height: 12em;
+                --paper-input-container-input: {
+                  margin: 0 2px;
+                }
+                --chat-message-text: {
+                  background-color: #f0f0f0;
+                  padding: 6px 8px;
+                  margin: 4px 0;
+                  border-radius: 6px;
+                };
+              }
+            }
+          </style>
+          <chat-window
+            class="styled"
+            author="me"
+            single-line
+            input-text="{{text}}"
+            messages="[[messages]]"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope = document.getElementById('scope');
+
+            var now = Date.now();
+            scope.messages = [
+              { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
+              { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
+              { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
+              { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
+              { author: 'me', text: 'dummy msg 5', created: now - (1.2*60*60*1000) },
+              { author: 'me', text: 'dummy msg 6', created: now - (1.5*60*60*1000) },
+              { author: 'you', text: 'dummy msg 7', created: now - (11.5*60*60*1000) },
+              { author: 'me', text: 'dummy msg 8', created: now - (12*60*60*1000) },
+              { author: 'you', text: 'dummy msg 9', created: now - (13*60*60*1000) },
+              { author: 'me', text: 'dummy msg 10', created: now - (1.5*24*60*60*1000) },
+              { author: 'you', text: 'dummy msg 11', created: now - (1.6*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 12', created: now - (4*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 13', created: now - (4.5*24*60*60*1000) },
+              { author: 'you', text: 'dummy msg 14', created: now - (14*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 15', created: now - (14.5*24*60*60*1000) },
+            ].reverse();
+
+            scope.sendMsg = function(e, text) {
+              // For demo purposes
+              scope.author = scope.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope.author,
+                text: text,
+                created: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope.push('messages', msg);
+              scope.text = '';
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+      Styled badly.
+      <demo-snippet>
+        <template is="dom-bind" id="scope3">
+          <style is="custom-style">
+            chat-window.styled-bad {
 
               --chat-window: {
                 border: 3px dashed green;
@@ -100,7 +164,7 @@
             }
           </style>
           <chat-window
-            class="styled"          
+            class="styled-bad"
             author="me"
             single-line
             input-text="{{text}}"
@@ -108,20 +172,23 @@
             send-icon="https://upload.wikimedia.org/wikipedia/commons/4/42/Cute-Ball-Go-icon.png"
             on-send="sendMsg"></chat-window>
           <script>
-            var scope = document.getElementById('scope');
-            scope.messages = [];
-            scope.sendMsg = function(e, text) {
+            var scope3 = document.getElementById('scope3');
+
+            var now = Date.now();
+            scope3.messages = [];
+
+            scope3.sendMsg = function(e, text) {
               // For demo purposes
-              scope.author = scope.author == 'me' ? 'you' : 'me';
+              scope3.author = scope3.author == 'me' ? 'you' : 'me';
 
               var msg = {
-                author:  scope.author,
+                author:  scope3.author,
                 text: text,
                 created: Date.now()
               }
               // console.log('sending...', msg);
-              scope.push('messages', msg);
-              scope.text = '';
+              scope3.push('messages', msg);
+              scope3.text = '';
             };
           </script>
         </template>

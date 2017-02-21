@@ -33,11 +33,12 @@ Style hooks:
     </style>
 
     <div class="container">
-      <slot name="chat-header"></slot>
+      <!-- <slot name="chat-header"></slot> -->
       <chat-messages
         author="[[author]]"
         messages="[[messages]]"
-        auto-scroll="[[autoScroll]]">          
+        date-format="[[dateFormat]]"
+        auto-scroll="[[autoScroll]]">
       </chat-messages>
       <slot name="chat-footer"></slot>
       <slot name="chat-input"></slot>
@@ -114,6 +115,19 @@ Style hooks:
         autoScroll: {
           type: Boolean,
           value: true
+        },
+
+        /**
+         * The date format to use when revealing the actual timestamp.
+         * See https://momentjs.com/docs/#/parsing/string-format/
+         * Examples:
+         *   YYYY-MM-DD HH:mm:ss
+         *   MM/DD/YYYY hh:mm a
+         *   Do of MMM, YYYY at hh:mm a
+         */
+        dateFormat: {
+          type: String,
+          value: 'ddd, MMM D, YYYY h:mm a'
         }
       },
 
