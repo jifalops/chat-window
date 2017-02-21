@@ -75,7 +75,9 @@ Style hooks:
           </from-now>
           <!-- </div> -->
           <!-- <div class="text-container"> -->
-            <div class$="[[_classForAuthor(item.author)]] text" title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
+            <div
+              class$="[[_classForAuthor(item.author)]] text"
+              title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
           <!-- </div> -->
         </div>
       </template>
@@ -137,21 +139,23 @@ Style hooks:
       },
 
       observers: [
-        '_messagesChanged(messages, messages.length, showAllTimestamps)'
+        '_messagesChanged(messages.*, showAllTimestamps)'
       ],
 
       _classForAuthor: function(author) {
         return author == this.author ? 'me' : 'not-me';
       },
 
-      _messagesChanged: function(messages, len, showAllTimestamps) {
+      _messagesChanged: function(changeData, showAllTimestamps) {
         // console.log('msg changed', changeData);
-        if (len > 0) {
-          if (this.autoScroll) {
-            this.scrollToBottom();
+        this.debounce('messages-changed', function() {
+          if (changeData && changeData.base && changeData.base.length > 0) {
+            if (this.autoScroll) {
+              this.scrollToBottom();
+            }
+            if (!showAllTimestamps) this._updateTimestampedIndexes(changeData.base);
           }
-          if (!showAllTimestamps) this._updateTimestampedIndexes(messages);
-        }
+        }.bind(this), 250);
       },
 
       _indexesContains: function(indexes, index, showAllTimestamps) {
@@ -159,6 +163,7 @@ Style hooks:
       },
 
       _updateTimestampedIndexes: function(messages) {
+        console.log('updating indexes...')
         this._indexes = [0];
         var i, age, between, now = Date.now();
         for (i = 1; i < messages.length; i++) {
