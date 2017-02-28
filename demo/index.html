@@ -33,10 +33,11 @@
         </template>
       </demo-snippet>
 
-      With a footer (between messages and input) and a custom input field.
+      With a header, footer (between messages and input), and a custom input field.
       <demo-snippet>
         <template>
           <chat-window>
+            <div slot="chat-header">Header</div>
             <div slot="chat-footer">Footer</div>
             <div slot="chat-input"><input /></div>
           </chat-window>

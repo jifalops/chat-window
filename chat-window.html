@@ -6,11 +6,13 @@
 `chat-window`
 A simple and flexible chat window for listing messages.
 
+```
 Style hooks:
 
-* `--chat-window` Applied to the chat-window container.
+--chat-window Applied to the chat-window container.
 
-* `--chat-window-input` Applied to the chat-input element.
+--chat-window-input Applied to the chat-input element.
+```
 
 @demo demo/index.html
 -->
@@ -33,7 +35,7 @@ Style hooks:
     </style>
 
     <div class="container">
-      <!-- <slot name="chat-header"></slot> -->
+      <slot name="chat-header"></slot>
       <chat-messages
         author="[[author]]"
         messages="[[messages]]"
