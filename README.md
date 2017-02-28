@@ -15,6 +15,7 @@ using [from-now](https://www.webcomponents.org/element/jifalops/from-now).
 * Listen for the `send` event to handle sending messages.
 
 ## Demo
+Mouse-over messages to see the absolute timestamp.
 <!--
 ```
 <custom-element-demo>
