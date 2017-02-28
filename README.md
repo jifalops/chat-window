@@ -10,9 +10,9 @@ bower install --save chat-window
 ```
 
 ## Usage
-Pass it a list of messages and it will display them with live relative timestamps
-using [&lt;from-now&gt;](https://www.webcomponents.org/element/jifalops/from-now).
-Listen for the `send` event to handle sending messages.
+* Pass it a list of messages and it will display them with live relative timestamps
+using [from-now](https://www.webcomponents.org/element/jifalops/from-now).
+* Listen for the `send` event to handle sending messages.
 
 ## Demo
 <!--
@@ -65,7 +65,6 @@ Listen for the `send` event to handle sending messages.
 
 ```html
 <chat-window
-  class="styled"
   author="me"
   single-line
   input-text="{{text}}"
@@ -96,7 +95,7 @@ API: [webcomponents.org](https://www.webcomponents.org/element/jifalops/chat-win
 ## Features
 * Single or multi line input.
 * Send-on-enter option, default is on for single-line and off for multi-line input.
-* Slots for footer and a custom input field.
+* Slots for a header, footer, and a custom input field.
 * Styling hooks for full styling flexibility
 * Automatically scrolls to bottom when a new message arrives (can be disabled).
 * Absolute timestamps can be shown via configurable date format.
@@ -106,7 +105,7 @@ API: [webcomponents.org](https://www.webcomponents.org/element/jifalops/chat-win
   * Show every four hours if a less than a week old,
   * Otherwise show once per day.
 
-### TODO
+#### TODO
 * Allow `author: msg` format instead of alignment based format.
 * Use material guidelines for showing relative vs absolute timestamps as well as their format.
 
