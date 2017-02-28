@@ -19,7 +19,7 @@ Mouse-over messages to see the absolute timestamp.
 <!--
 ```
 <custom-element-demo>
-  <template is="dom-bind">
+  <template>
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="chat-window.html">
     <style is="custom-style">
@@ -39,7 +39,27 @@ Mouse-over messages to see the absolute timestamp.
           border-radius: 6px;
         };    
       }
-    </style>              
+    </style>          
+    <script>
+      var now = Date.now();
+      var messages = [
+        { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
+        { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
+        { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
+        { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
+        { author: 'me', text: 'dummy msg 5', created: now - (1.2*60*60*1000) },
+        { author: 'me', text: 'dummy msg 6', created: now - (1.5*60*60*1000) },
+        { author: 'you', text: 'dummy msg 7', created: now - (11.5*60*60*1000) },
+        { author: 'me', text: 'dummy msg 8', created: now - (12*60*60*1000) },
+        { author: 'you', text: 'dummy msg 9', created: now - (13*60*60*1000) },
+        { author: 'me', text: 'dummy msg 10', created: now - (1.5*24*60*60*1000) },
+        { author: 'you', text: 'dummy msg 11', created: now - (1.6*24*60*60*1000) },
+        { author: 'me', text: 'dummy msg 12', created: now - (4*24*60*60*1000) },
+        { author: 'me', text: 'dummy msg 13', created: now - (4.5*24*60*60*1000) },
+        { author: 'you', text: 'dummy msg 14', created: now - (14*24*60*60*1000) },
+        { author: 'me', text: 'dummy msg 15', created: now - (14.5*24*60*60*1000) },
+      ].reverse();
+    </script>
     <next-code-block></next-code-block>
   </template>
 </custom-element-demo>
@@ -50,33 +70,21 @@ Mouse-over messages to see the absolute timestamp.
 <chat-window
   id="chat"
   author="me"
-  single-line
-  on-send="sendMsg">
+  single-line>
 </chat-window>
 <script>
-  var chat = document.getElementById('chat');
-  var now = Date.now();
-  var messages = [
-    { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
-    { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
-    { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
-    { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
-  ].reverse();
-  chat.messages = messages;
+  var chat = document.getElementById('chat');  
   var author;
-  function sendMsg(e, text) {    
-    author = scope.author == 'me' ? 'you' : 'me'; // For demo
-    messages.push({
-      author:  scope.author,
-      text: text,
+  chat.messages = messages;
+  chat.addEventListener('send', function(e) {
+    author = author == 'me' ? 'you' : 'me'; // For demo
+    chat.push('messages',{
+      author: author,
+      text: e.detail,
       created: Date.now()
     });
     chat.inputText = '';
-    chat.messages = messages;
-  };
-</script>
-<script>
-
+  });  
 </script>
 ```
 
