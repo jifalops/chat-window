@@ -108,7 +108,7 @@ API: [webcomponents.org](https://www.webcomponents.org/element/jifalops/chat-win
   * Show every four hours if a less than a week old,
   * Otherwise show once per day.
 
-#### TODO
+TODO
 * Allow `author: msg` format instead of alignment based format.
 * Use material guidelines for showing relative vs absolute timestamps as well as their format.
 
