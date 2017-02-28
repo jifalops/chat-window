@@ -17,14 +17,17 @@ using [from-now](https://www.webcomponents.org/element/jifalops/from-now).
 ## Demo
 <!--
 ```
-<custom-element-demo is="dom-bind" id="scope">
+<custom-element-demo>
   <template>
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="chat-window.html">
-    <style is="custom-style">
+    <style>
       chat-window {
         font-size: small;
         --chat-messages-height: 12em;
+        --chat-messages-scroller: {
+          border: 1px inset #eee;
+        }
         --paper-input-container-input: {
           margin: 0 2px;
         };
@@ -33,14 +36,13 @@ using [from-now](https://www.webcomponents.org/element/jifalops/from-now).
           padding: 6px 8px;
           margin: 4px 0;
           border-radius: 6px;
-        };
-      }  
+        };    
+      }
     </style>    
     <next-code-block></next-code-block>   
     <script>
-      var scope = document.getElementById('scope');
       var now = Date.now();
-      scope.messages = [
+      var messages = [
         { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
         { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
         { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
@@ -65,22 +67,24 @@ using [from-now](https://www.webcomponents.org/element/jifalops/from-now).
 
 ```html
 <chat-window
+  id="chat"
   author="me"
   single-line
-  input-text="{{text}}"
-  messages="[[messages]]"
   on-send="sendMsg">
 </chat-window>
 <script>
-  var scope = document.getElementById('scope');
-  scope.sendMsg = function(e, text) {    
-    scope.author = scope.author == 'me' ? 'you' : 'me'; // For demo
-    scope.push('messages', {
+  var chat = document.getElementById('chat');
+  chat.messages = messages;
+  var author;
+  function sendMsg(e, text) {    
+    author = scope.author == 'me' ? 'you' : 'me'; // For demo
+    messages.push({
       author:  scope.author,
       text: text,
       created: Date.now()
     });
-    scope.text = '';
+    chat.inputText = '';
+    chat.messages = messages;
   };
 </script>
 ```
