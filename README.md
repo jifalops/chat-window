@@ -19,10 +19,10 @@ Mouse-over messages to see the absolute timestamp.
 <!--
 ```
 <custom-element-demo>
-  <template>
+  <template is="dom-bind">
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="chat-window.html">
-    <style>
+    <style is="custom-style">
       chat-window {
         font-size: small;
         --chat-messages-height: 12em;
@@ -39,28 +39,8 @@ Mouse-over messages to see the absolute timestamp.
           border-radius: 6px;
         };    
       }
-    </style>    
-    <next-code-block></next-code-block>   
-    <script>
-      var now = Date.now();
-      var messages = [
-        { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
-        { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
-        { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
-        { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
-        { author: 'me', text: 'dummy msg 5', created: now - (1.2*60*60*1000) },
-        { author: 'me', text: 'dummy msg 6', created: now - (1.5*60*60*1000) },
-        { author: 'you', text: 'dummy msg 7', created: now - (11.5*60*60*1000) },
-        { author: 'me', text: 'dummy msg 8', created: now - (12*60*60*1000) },
-        { author: 'you', text: 'dummy msg 9', created: now - (13*60*60*1000) },
-        { author: 'me', text: 'dummy msg 10', created: now - (1.5*24*60*60*1000) },
-        { author: 'you', text: 'dummy msg 11', created: now - (1.6*24*60*60*1000) },
-        { author: 'me', text: 'dummy msg 12', created: now - (4*24*60*60*1000) },
-        { author: 'me', text: 'dummy msg 13', created: now - (4.5*24*60*60*1000) },
-        { author: 'you', text: 'dummy msg 14', created: now - (14*24*60*60*1000) },
-        { author: 'me', text: 'dummy msg 15', created: now - (14.5*24*60*60*1000) },
-      ].reverse();
-    </script>
+    </style>              
+    <next-code-block></next-code-block>
   </template>
 </custom-element-demo>
 ```
@@ -75,6 +55,13 @@ Mouse-over messages to see the absolute timestamp.
 </chat-window>
 <script>
   var chat = document.getElementById('chat');
+  var now = Date.now();
+  var messages = [
+    { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
+    { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
+    { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
+    { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
+  ].reverse();
   chat.messages = messages;
   var author;
   function sendMsg(e, text) {    
@@ -87,6 +74,9 @@ Mouse-over messages to see the absolute timestamp.
     chat.inputText = '';
     chat.messages = messages;
   };
+</script>
+<script>
+
 </script>
 ```
 
