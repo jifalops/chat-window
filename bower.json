@@ -15,7 +15,7 @@
     "polymer": "Polymer/polymer#^2.0.0-rc.3",
     "paper-input": "#2.0-preview",
     "from-now": "jifalops/from-now#2.0-preview",
-    "paper-dialog-scrollable": "#2.0-preview",
+    "paper-dialog-scrollable": "*",
     "paper-icon-button": "#2.0-preview",
     "iron-flex-layout": "#2.0-preview",
     "iron-icons": "#2.0-preview"
@@ -28,6 +28,6 @@
   },
   "resolutions": {
     "polymer": "^2.0.0-rc.3",
-    "webcomponentsjs": "^1.0.0-rc.6"
+    "webcomponentsjs": "^v1.0.0-rc.5"
   }
 }
