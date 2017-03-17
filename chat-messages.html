@@ -1,8 +1,9 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../from-now/from-now.html">
 <link rel="import" href="../from-now/moment-import.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../shadycss/apply-shim.html">
 
 <!--
 `chat-window`
@@ -85,11 +86,12 @@ Style hooks:
   </template>
 
   <script>
-    Polymer({
+  class ChatMessages extends Polymer.Element {
 
-      is: 'chat-messages',
+    static get is() { return 'chat-messages'; }
 
-      properties: {
+    static get properties() {
+      return {
         /**
          * The author is compared to each message's author to determine how that
          * message should be displayed. If the message's author matches, the
@@ -105,7 +107,7 @@ Style hooks:
          */
         messages: {
           type: Array,
-          value: function() { return []; }
+          value() { return []; }
         },
 
         /**
@@ -136,70 +138,74 @@ Style hooks:
           type: String,
           value: 'YYYY-MM-DD HH:mm'
         }
-      },
+      };
+    }
 
-      observers: [
+    static get observers() {
+      return [
         '_messagesChanged(messages.*, showAllTimestamps)'
-      ],
+      ];
+    }
+    _classForAuthor(author) {
+      return author == this.author ? 'me' : 'not-me';
+    }
 
-      _classForAuthor: function(author) {
-        return author == this.author ? 'me' : 'not-me';
-      },
-
-      _messagesChanged: function(changeData, showAllTimestamps) {
-        // console.log('msg changed', changeData);
-        this.debounce('messages-changed', function() {
-          if (changeData && changeData.base && changeData.base.length > 0) {
-            if (this.autoScroll) {
-              this.scrollToBottom();
-            }
-            if (!showAllTimestamps) this._updateTimestampedIndexes(changeData.base);
+    _messagesChanged(changeData, showAllTimestamps) {
+      // console.log('msg changed', changeData);
+      this.debounce('messages-changed', function() {
+        if (changeData && changeData.base && changeData.base.length > 0) {
+          if (this.autoScroll) {
+            this.scrollToBottom();
           }
-        }.bind(this), 250);
-      },
-
-      _indexesContains: function(indexes, index, showAllTimestamps) {
-        return showAllTimestamps || (indexes && indexes.includes(index));
-      },
-
-      _updateTimestampedIndexes: function(messages) {
-        // console.log('updating indexes...', messages)
-        var indexes = [0];
-        var i, age, between, now = Date.now();
-        for (i = 1; i < messages.length; i++) {
-          age = now - messages[i].created;
-          between = messages[i].created - messages[i - 1].created;
-          // console.log('index', i, 'age', age, 'between', between);
-          if (this._shouldBeTimestamped(age, between)) {
-            indexes.push(i);
-          }
+          if (!showAllTimestamps) this._updateTimestampedIndexes(changeData.base);
         }
-        this._indexes = indexes;
-        // console.log('indexes', this._indexes);
-      },
+      }.bind(this), 250);
+    }
 
-      _shouldBeTimestamped: function(age, between) {
-        if (age < 60 * 60 * 1000) {                  // If less than one hour old,
-          return between > 5 * 60 * 1000;            // show every 5 minutes.
-        } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
-          return between > 60 * 60 * 1000;           // show every hour.
-        } else if (age < 7 * 24 * 60 * 60 * 1000) {  // If less than a week old,
-          return between > 4 * 60 * 60 * 1000;       // show every four hours.
-        } else {                                     // If a week or older,
-          return between > 24 * 60 * 60 * 1000;      // show once per day.
+    _indexesContains(indexes, index, showAllTimestamps) {
+      return showAllTimestamps || (indexes && indexes.includes(index));
+    }
+
+    _updateTimestampedIndexes(messages) {
+      // console.log('updating indexes...', messages)
+      var indexes = [0];
+      var i, age, between, now = Date.now();
+      for (i = 1; i < messages.length; i++) {
+        age = now - messages[i].created;
+        between = messages[i].created - messages[i - 1].created;
+        // console.log('index', i, 'age', age, 'between', between);
+        if (this._shouldBeTimestamped(age, between)) {
+          indexes.push(i);
         }
-      },
+      }
+      this._indexes = indexes;
+      // console.log('indexes', this._indexes);
+    }
 
-      _formatTimestamp: function(time) {
-        return moment(time).format(this.dateFormat);
-      },
+    _shouldBeTimestamped(age, between) {
+      if (age < 60 * 60 * 1000) {                  // If less than one hour old,
+        return between > 5 * 60 * 1000;            // show every 5 minutes.
+      } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
+        return between > 60 * 60 * 1000;           // show every hour.
+      } else if (age < 7 * 24 * 60 * 60 * 1000) {  // If less than a week old,
+        return between > 4 * 60 * 60 * 1000;       // show every four hours.
+      } else {                                     // If a week or older,
+        return between > 24 * 60 * 60 * 1000;      // show once per day.
+      }
+    }
 
-      scrollToBottom: function() {
-        setTimeout(function() {
-          var target = this.$.scroller.scrollTarget;
-          target.scrollTop = target.scrollHeight;
-        }.bind(this), 100);
-      },
-    });
+    _formatTimestamp(time) {
+      return moment(time).format(this.dateFormat);
+    }
+
+    scrollToBottom() {
+      setTimeout(function() {
+        var target = this.$.scroller.scrollTarget;
+        target.scrollTop = target.scrollHeight;
+      }.bind(this), 100);
+    }
+  }
+
+  window.customElements.define(ChatMessages.is, ChatMessages);
   </script>
 </dom-module>

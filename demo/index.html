@@ -8,11 +8,14 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
+    <link rel="import" href="../../shadycss/apply-shim.html">
     <link rel="import" href="../chat-window.html">
-
+    <link rel="import" href="../chat-messages.html">
+    <link rel="import" href="../chat-input.html">
+    <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
+    </custom-style>
   </head>
   <body>
 
@@ -49,7 +52,9 @@
 
       Send events and styled.
       <demo-snippet>
+        <dom-bind>
         <template is="dom-bind" id="scope">
+          <custom-style>
           <style is="custom-style">
             chat-window.styled {
                 font-size: small;
@@ -66,6 +71,7 @@
               }
             }
           </style>
+          </custom-style>
           <chat-window
             class="styled"
             author="me"
@@ -110,11 +116,14 @@
             };
           </script>
         </template>
+        </dom-bind>
       </demo-snippet>
 
       Styled badly.
       <demo-snippet>
+        <dom-bind>
         <template is="dom-bind" id="scope3">
+          <custom-style>
           <style is="custom-style">
             chat-window.styled-bad {
 
@@ -164,6 +173,7 @@
               }
             }
           </style>
+          </custom-style>
           <chat-window
             class="styled-bad"
             author="me"
@@ -193,10 +203,12 @@
             };
           </script>
         </template>
+        </dom-bind>
       </demo-snippet>
 
       Send events multiline.
       <demo-snippet>
+        <dom-bind>
         <template is="dom-bind" id="scope2">
           <chat-window
             author="me"
@@ -221,6 +233,7 @@
             };
           </script>
         </template>
+        </dom-bind>
       </demo-snippet>
 
     </div>

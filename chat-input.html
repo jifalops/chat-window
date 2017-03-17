@@ -1,9 +1,11 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../shadycss/apply-shim.html">
+<link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
 `chat-window`
@@ -53,11 +55,12 @@ the state of the `singleLine` property.
   </template>
 
   <script>
-    Polymer({
+  class ChatInput extends Polymer.GestureEventListeners(Polymer.Element) {
 
-      is: 'chat-input',
+    static get is() { return 'chat-input'; }
 
-      properties: {
+    static get properties() {
+      return {
         /**
          * Whether to allow single line messages only. Internally a paper-input
          * will be used instead of a paper-textarea.
@@ -89,37 +92,45 @@ the state of the `singleLine` property.
           * and not send if in multiline input mode.
           */
          sendOnEnter: Boolean
-      },
+      };
+    }
 
-      _fireSendEvent: function(e) {
-        // console.log('firing send event...', this.text);
-        this.fire('send', this.text);
-      },
+    static get observers() {
+      return [
 
-      _getIcon: function(icon) {
-        return this._iconIsUrl(icon) ? '' : icon;
-      },
+      ];
+    }
+    _fireSendEvent(e) {
+      // console.log('firing send event...', this.text);
+      this.dispatchEvent(new CustomEvent('send', { detail: this.text, bubbles: true }));
+    }
 
-      _getSrc: function(icon) {
-        return this._iconIsUrl(icon) ? icon : '';
-      },
+    _getIcon(icon) {
+      return this._iconIsUrl(icon) ? '' : icon;
+    }
 
-      _iconIsUrl: function(icon) {
-        return icon && icon.indexOf('/') !== -1;
-      },
+    _getSrc(icon) {
+      return this._iconIsUrl(icon) ? icon : '';
+    }
 
-      _checkForEnter: function (e) {
-        if (e.keyCode === 13 &&
-            (this.sendOnEnter || (this.sendOnEnter === undefined && this.singleLine))) {
-          this._fireSendEvent();
-        }
+    _iconIsUrl(icon) {
+      return icon && icon.indexOf('/') !== -1;
+    }
+
+    _checkForEnter (e) {
+      if (e.keyCode === 13 &&
+          (this.sendOnEnter || (this.sendOnEnter === undefined && this.singleLine))) {
+        this._fireSendEvent();
       }
+    }
 
-      /**
-       * Triggered when a user taps the send button.
-       * @event send
-       * @param {text} string The message to be sent.
-       */
-    });
+    /**
+     * Triggered when a user taps the send button.
+     * @event send
+     * @param {text} string The message to be sent.
+     */
+  }
+
+  window.customElements.define(ChatInput.is, ChatInput);
   </script>
 </dom-module>

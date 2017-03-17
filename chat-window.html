@@ -1,4 +1,6 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
+<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="chat-messages.html">
 <link rel="import" href="chat-input.html">
 
@@ -44,7 +46,7 @@ Style hooks:
       </chat-messages>
       <slot name="chat-footer"></slot>
       <slot name="chat-input"></slot>
-      <template is="dom-if" if="[[!_hasCustomInput()]]">
+      <template is="dom-if" if="[[!_hasCustomInput]]">
 		    <chat-input
 		      single-line="[[singleLine]]"
 		      icon="[[sendIcon]]"
@@ -55,11 +57,12 @@ Style hooks:
   </template>
 
   <script>
-    Polymer({
+  class ChatWindow extends Polymer.Element {
 
-      is: 'chat-window',
+    static get is() { return 'chat-window'; }
 
-      properties: {
+    static get properties() {
+      return {
         /**
          * Whether to allow single line messages only. This option has no effect
          * if using a custom input element.
@@ -130,19 +133,28 @@ Style hooks:
         dateFormat: {
           type: String,
           value: 'ddd, MMM D, YYYY h:mm a'
+        },
+
+        _hasCustomInput: {
+          type: Boolean,
+          value: true
         }
-      },
+      };
+    }
 
+    static get observers() {
+      return [
 
-      _hasCustomInput: function () {
-        var distributed = Polymer.dom(this).childNodes;
-				for (var i = 0; i < distributed.length; i++) {
-          if (distributed[i].slot == 'chat-input') {
-            return true;
-          }
-				}
-        return false;
-			}
-    });
+      ];
+    }
+
+    connectedCallback() {
+      this._hasCustomInput = false;
+      var nodes = Polymer.FlattenedNodesObserver.getFlattenedNodes(this);
+      this._hasCustomInput = nodes && nodes.length > 0;
+    }
+  }
+
+  window.customElements.define(ChatWindow.is, ChatWindow);
   </script>
 </dom-module>
