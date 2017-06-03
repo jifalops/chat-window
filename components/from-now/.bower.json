@@ -1,0 +1,36 @@
+{
+  "name": "from-now",
+  "description": "A polymer element that strategically updates a time from (or to) now using Momentjs. ",
+  "main": "from-now.html",
+  "keywords": [
+    "web-components",
+    "moment",
+    "momentjs",
+    "time",
+    "now",
+    "duration",
+    "since"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "moment": "^2.18.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/jifalops/from-now",
+  "version": "0.3.3",
+  "_release": "0.3.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.3",
+    "commit": "757c4a2b7517865e74b415e4df62480879964bd0"
+  },
+  "_source": "https://github.com/jifalops/from-now.git",
+  "_target": "^0.3.3",
+  "_originalSource": "jifalops/from-now"
+}

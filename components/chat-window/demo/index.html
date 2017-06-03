@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+  <head>
+    <title>chat-window demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../chat-window.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic chat-window Demo</h3>
+
+      No options, uses the default input field.
+      <demo-snippet>
+        <template>
+          <chat-window></chat-window>
+        </template>
+      </demo-snippet>
+
+      Single line input
+      <demo-snippet>
+        <template>
+          <chat-window single-line></chat-window>
+        </template>
+      </demo-snippet>
+
+      With a header, footer (between messages and input), and a custom input field.
+      <demo-snippet>
+        <template>
+          <chat-window>
+            <div slot="chat-header">Header</div>
+            <div slot="chat-footer">Footer</div>
+            <div slot="chat-input"><input /></div>
+          </chat-window>
+        </template>
+      </demo-snippet>
+
+
+      <h3>Complete chat-window Demo</h3>
+
+      Send events and styled.
+      <demo-snippet>
+        <template is="dom-bind" id="scope">
+          <style is="custom-style">
+            chat-window.styled {
+                font-size: small;
+                --chat-messages-height: 12em;
+                --paper-input-container-input: {
+                  margin: 0 2px;
+                }
+                --chat-message-text: {
+                  background-color: #f0f0f0;
+                  padding: 6px 8px;
+                  margin: 4px 0;
+                  border-radius: 6px;
+                };
+              }
+            }
+          </style>
+          <chat-window
+            class="styled"
+            author="me"
+            single-line
+            input-text="{{text}}"
+            messages="[[messages]]"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope = document.getElementById('scope');
+
+            var now = Date.now();
+            scope.messages = [
+              { author: 'you', text: 'dummy msg 1', created: now - (60*1000) },
+              { author: 'me', text: 'dummy msg 2', created: now - (3*60*1000) },
+              { author: 'you', text: 'dummy msg 3', created: now - (10*60*1000) },
+              { author: 'you', text: 'dummy msg 4', created: now - (60*60*1000) },
+              { author: 'me', text: 'dummy msg 5', created: now - (1.2*60*60*1000) },
+              { author: 'me', text: 'dummy msg 6', created: now - (1.5*60*60*1000) },
+              { author: 'you', text: 'dummy msg 7', created: now - (11.5*60*60*1000) },
+              { author: 'me', text: 'dummy msg 8', created: now - (12*60*60*1000) },
+              { author: 'you', text: 'dummy msg 9', created: now - (13*60*60*1000) },
+              { author: 'me', text: 'dummy msg 10', created: now - (1.5*24*60*60*1000) },
+              { author: 'you', text: 'dummy msg 11', created: now - (1.6*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 12', created: now - (4*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 13', created: now - (4.5*24*60*60*1000) },
+              { author: 'you', text: 'dummy msg 14', created: now - (14*24*60*60*1000) },
+              { author: 'me', text: 'dummy msg 15', created: now - (14.5*24*60*60*1000) },
+            ].reverse();
+
+            scope.sendMsg = function(e, text) {
+              // For demo purposes
+              scope.author = scope.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope.author,
+                text: text,
+                created: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope.push('messages', msg);
+              scope.text = '';
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+      Styled badly.
+      <demo-snippet>
+        <template is="dom-bind" id="scope3">
+          <style is="custom-style">
+            chat-window.styled-bad {
+
+              --chat-window: {
+                border: 3px dashed green;
+              };
+              --chat-window-input: {
+                background-color: #aaf;
+              };
+
+
+              --chat-messages-height: 8em;
+              --chat-messages-scroller: {
+                background-color: yellow;
+                border: 3px inset red;
+              };
+              --chat-message: {
+                background-color: pink;
+                margin: 2px;
+              };
+              --chat-message-time: {
+                background-color: orange;
+              };
+              --chat-message-text: {
+                font-style: italic;
+              };
+              --chat-message-text-me: {
+                font-weight: bold;
+              };
+              --chat-message-text-not-me: {
+                color: gray;
+              };
+
+
+              --chat-input-input: {
+                background-color: magenta;
+                margin: 4px;
+              }
+              --paper-input-container-input: {
+                font-size: small;
+                margin: 0 2px;
+              }
+              --chat-input-button: {
+                color: cyan;
+                height: 48px;
+                width: 48px;
+              }
+            }
+          </style>
+          <chat-window
+            class="styled-bad"
+            author="me"
+            single-line
+            input-text="{{text}}"
+            messages="[[messages]]"
+            send-icon="https://upload.wikimedia.org/wikipedia/commons/4/42/Cute-Ball-Go-icon.png"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope3 = document.getElementById('scope3');
+
+            var now = Date.now();
+            scope3.messages = [];
+
+            scope3.sendMsg = function(e, text) {
+              // For demo purposes
+              scope3.author = scope3.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope3.author,
+                text: text,
+                created: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope3.push('messages', msg);
+              scope3.text = '';
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+      Send events multiline.
+      <demo-snippet>
+        <template is="dom-bind" id="scope2">
+          <chat-window
+            author="me"
+            input-text="{{text}}"
+            messages="[[messages]]"
+            on-send="sendMsg"></chat-window>
+          <script>
+            var scope2 = document.getElementById('scope2');
+            scope2.messages = [];
+            scope2.sendMsg = function(e, text) {
+              // For demo purposes
+              scope2.author = scope2.author == 'me' ? 'you' : 'me';
+
+              var msg = {
+                author:  scope2.author,
+                text: text,
+                created: Date.now()
+              }
+              // console.log('sending...', msg);
+              scope2.push('messages', msg);
+              scope2.text = '';
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+    </div>
+
+  </body>
+</html>
