@@ -3,6 +3,8 @@
 <link rel="import" href="../from-now/moment-import.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <!--
 `chat-window`
@@ -39,9 +41,7 @@ Style hooks:
         @apply --layout-vertical;
         @apply --chat-message;
       }
-      .time, .text {
-        /*@apply --layout-horizontal;*/
-      }
+
       from-now {
         font-size: small;
         color: gray;
@@ -49,37 +49,66 @@ Style hooks:
         @apply --chat-message-time;
       }
       .text-container {
+        /*@apply --layout-horizontal;*/
+        @apply --chat-message-text-container;
+      }
+
+      .text-container.me {
+        @apply --layout-horizontal-reverse;
+        @apply --layout-end;
+        @apply --chat-message-text-container-me;
+      }
+
+      .text-container.not-me {
         @apply --layout-horizontal;
+        @apply --chat-message-text-container-not-me;
       }
       .text {
-        word-break: break-all;
-        max-width: 90%;
+        overflow-wrap: break-word;
+        max-width: 80%;
         @apply --chat-message-text;
       }
-      .text.me {
+      .me .text {
         @apply --layout-self-end;
         @apply --chat-message-text-me;
       }
-      .text.not-me {
+      .not-me .text {
         @apply --layout-self-start;
         @apply --chat-message-text-not-me;
+      }
+      iron-icon {
+        --iron-icon-height: 24px;
+        --iron-icon-width: 24px;
+      }
+      .me iron-icon {
+        margin-left: 5px;
+        @apply --chat-message-icon-me;
+      }
+      .not-me iron-icon {
+        margin-right: 5px;
+        @apply --chat-message-icon-not-me;
       }
     </style>
 
     <paper-dialog-scrollable id="scroller">
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
-          <!-- <div class="time"> -->
           <from-now
             time="[[item.created]]"
+            idle="[[!_indexesContains(_indexes, index, showAllTimestamps)]]"
             hidden$="[[!_indexesContains(_indexes, index, showAllTimestamps)]]">
           </from-now>
-          <!-- </div> -->
-          <!-- <div class="text-container"> -->
+          <div class$="[[_classForAuthor(item.author)]] text-container">
+		        <iron-icon
+              icon="[[_getIcon(item.author)]]"
+              src="[[_getSrc(item.author)]]">
+            </iron-icon>
             <div
-              class$="[[_classForAuthor(item.author)]] text"
-              title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
-          <!-- </div> -->
+              class="text"
+              title="[[_formatTimestamp(item.created)]]">
+              [[item.text]]
+            </div>
+          </div>
         </div>
       </template>
     </paper-dialog-scrollable>
@@ -97,6 +126,14 @@ Style hooks:
          * default is to display it using flexbox's self-end alignment.
          */
         author: String,
+
+        /**
+        * The iron-icon's `icon` or a URL to use as the iron-icon's `src`.
+        */
+        authorIcon: {
+          type: String,
+          value: 'account-circle'
+        },
 
         /**
          * The messages array. Each element must have three properties:
@@ -127,6 +164,7 @@ Style hooks:
 
         /**
          * The date format to use when revealing the actual timestamp.
+         * The default behavior is to use momentjs's `calendar` function.
          * See https://momentjs.com/docs/#/parsing/string-format/
          * Examples:
          *   YYYY-MM-DD HH:mm:ss
@@ -135,7 +173,19 @@ Style hooks:
          */
         dateFormat: {
           type: String,
-          value: 'YYYY-MM-DD HH:mm'
+          // value: 'YYYY-MM-DD HH:mm'
+        },
+
+        /**
+         * Icons for other authors. Maps each author to an icon or URL.
+         */
+        othersIcons: Object,
+        /**
+         * The default icon/url to use when one isn't defined for an author.
+         */
+        defaultIcon: {
+          type: String,
+          value: 'face'
         }
       },
 
@@ -192,7 +242,7 @@ Style hooks:
       },
 
       _formatTimestamp: function(time) {
-        return moment(time).format(this.dateFormat);
+        return this.dateFormat ? moment(time).format(this.dateFormat) : moment(time).calendar();
       },
 
       scrollToBottom: function() {
@@ -200,6 +250,30 @@ Style hooks:
           var target = this.$.scroller.scrollTarget;
           target.scrollTop = target.scrollHeight;
         }.bind(this), 100);
+      },
+
+      _getIcon: function(author) {
+        if (author == this.author) {
+          return this._iconIsUrl(this.authorIcon) ? '' : this.authorIcon;
+        } else if (this.othersIcons && this.othersIcons[author]) {
+          return this._iconIsUrl(this.othersIcons[author]) ? '' : this.othersIcons[author];
+        } else {
+          return this._iconIsUrl(this.defaultIcon) ? '' : this.defaultIcon;
+        }
+      },
+
+      _getSrc: function(author) {
+        if (author == this.author) {
+          return this._iconIsUrl(this.authorIcon) ? this.authorIcon : '';
+        } else if (this.othersIcons && this.othersIcons[author]) {
+          return this._iconIsUrl(this.othersIcons[author]) ? this.othersIcons[author] : '';
+        } else {
+          return this._iconIsUrl(this.defaultIcon) ? this.defaultIcon : '';
+        }
+      },
+
+      _iconIsUrl: function(icon) {
+        return icon && (icon.includes('/') || icon.includes('.'));
       },
     });
   </script>

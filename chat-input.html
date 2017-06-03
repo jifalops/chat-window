@@ -105,7 +105,7 @@ the state of the `singleLine` property.
       },
 
       _iconIsUrl: function(icon) {
-        return icon && icon.indexOf('/') !== -1;
+        return icon && (icon.includes('/') || icon.includes('.'));
       },
 
       _checkForEnter: function (e) {
@@ -116,7 +116,7 @@ the state of the `singleLine` property.
       }
 
       /**
-       * Triggered when a user taps the send button.
+       * Triggered when a user taps the send button. The text may be empty.
        * @event send
        * @param {text} string The message to be sent.
        */
