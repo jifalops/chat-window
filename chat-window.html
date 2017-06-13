@@ -1,6 +1,6 @@
+<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
-<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="chat-messages.html">
 <link rel="import" href="chat-input.html">
 
@@ -142,13 +142,8 @@ Style hooks:
       };
     }
 
-    static get observers() {
-      return [
-
-      ];
-    }
-
     connectedCallback() {
+      super.connectedCallback();
       this._hasCustomInput = false;
       var nodes = Polymer.FlattenedNodesObserver.getFlattenedNodes(this);
       this._hasCustomInput = nodes && nodes.length > 0;

@@ -1,10 +1,10 @@
+<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
@@ -36,6 +36,8 @@ the state of the `singleLine` property.
       }
       paper-icon-button {
         color: var(--primary-color);
+        width: 40px;
+        height: 40px;
         @apply --chat-input-button;
       }
     </style>
@@ -55,82 +57,92 @@ the state of the `singleLine` property.
   </template>
 
   <script>
-  class ChatInput extends Polymer.GestureEventListeners(Polymer.Element) {
-
-    static get is() { return 'chat-input'; }
-
-    static get properties() {
-      return {
-        /**
-         * Whether to allow single line messages only. Internally a paper-input
-         * will be used instead of a paper-textarea.
-         */
-        singleLine: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
-         * The text inside the input field.
-         */
-        text: {
-          type: String,
-          notify: true
-        },
-
-        /**
-         * The paper-icon-button's `icon` or a URL to use as the paper-icon-button's `src`.
-         */
-         icon: {
-           type: String,
-           value: 'send'
-         },
-
-         /**
-          * Whether to send the message when a user presses `enter` on the keyboard.
-          * The default behavior is to send-on-enter when in single-line input mode,
-          * and not send if in multiline input mode.
-          */
-         sendOnEnter: Boolean
-      };
-    }
-
-    static get observers() {
-      return [
-
-      ];
-    }
-    _fireSendEvent(e) {
-      // console.log('firing send event...', this.text);
-      this.dispatchEvent(new CustomEvent('send', { detail: this.text, bubbles: true }));
-    }
-
-    _getIcon(icon) {
-      return this._iconIsUrl(icon) ? '' : icon;
-    }
-
-    _getSrc(icon) {
-      return this._iconIsUrl(icon) ? icon : '';
-    }
-
-    _iconIsUrl(icon) {
-      return icon && icon.indexOf('/') !== -1;
-    }
-
-    _checkForEnter (e) {
-      if (e.keyCode === 13 &&
-          (this.sendOnEnter || (this.sendOnEnter === undefined && this.singleLine))) {
-        this._fireSendEvent();
-      }
-    }
-
     /**
-     * Triggered when a user taps the send button.
-     * @event send
-     * @param {text} string The message to be sent.
+     * `chat-input`
+     * 
+     *
+     * @customElement
+     * @polymer
      */
-  }
+    class ChatInput extends Polymer.GestureEventListeners(Polymer.Element) {
 
-  window.customElements.define(ChatInput.is, ChatInput);
+      static get is() { return 'chat-input'; }
+
+      static get properties() {
+        return {
+          /**
+          * Whether to allow single line messages only. Internally a paper-input
+          * will be used instead of a paper-textarea.
+          */
+          singleLine: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+          * The text inside the input field.
+          */
+          text: {
+            type: String,
+            notify: true
+          },
+
+          /**
+          * The paper-icon-button's `icon` or a URL to use as the paper-icon-button's `src`.
+          */
+          icon: {
+            type: String,
+            value: 'send'
+          },
+
+          /**
+            * Whether to send the message when a user presses `enter` on the keyboard.
+            * The default behavior is to send-on-enter when in single-line input mode,
+            * and not send if in multiline input mode.
+            */
+          sendOnEnter: Boolean
+        };
+      }
+
+      static get observers() {
+        return [
+
+        ];
+      }
+      _fireSendEvent(e) {
+        // console.log('firing send event...', this.text);
+        this.dispatchEvent(new CustomEvent('send', { detail: this.text, bubbles: true, composed: true }));
+        /* To make a custom event pass through shadow DOM boundaries,
+          set the `composed` flag to true when you create the event -
+          https://www.polymer-project.org/2.0/docs/devguide/events#custom-events */
+      }
+
+      _getIcon(icon) {
+        return this._iconIsUrl(icon) ? '' : icon;
+      }
+
+      _getSrc(icon) {
+        return this._iconIsUrl(icon) ? icon : '';
+      }
+
+      _iconIsUrl(icon) {
+        return icon && icon.indexOf('/') !== -1;
+      }
+
+      _checkForEnter (e) {
+        if (e.keyCode === 13 &&
+            (this.sendOnEnter || (this.sendOnEnter === undefined && this.singleLine))) {
+          this._fireSendEvent();
+        }
+      }
+
+      /**
+      * Triggered when a user taps the send button.
+      * @event send
+      * @param {text} string The message to be sent.
+      */
+    }
+
+    window.customElements.define(ChatInput.is, ChatInput);
   </script>
 </dom-module>
