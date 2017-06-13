@@ -1,9 +1,13 @@
+<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../from-now/from-now.html">
 <link rel="import" href="../from-now/moment-import.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
-<link rel="import" href="../shadycss/apply-shim.html">
+<!-- import debounce module -->
+<link rel="import" href="../polymer/lib/utils/debounce.html">
+<!-- import async module -->
+<link rel="import" href="../polymer/lib/utils/async.html">
 
 <!--
 `chat-window`
@@ -35,16 +39,14 @@ Style hooks:
       paper-dialog-scrollable {
         height: var(--chat-messages-height, 5em);
         @apply --chat-messages-scroller;
+        @apply --layout-vertical; /* Add --layout-vertical here to make scroll works */
       }
       .message {
         @apply --layout-vertical;
         @apply --chat-message;
       }
-      .time, .text {
-        /*@apply --layout-horizontal;*/
-      }
       from-now {
-        font-size small;
+        font-size: small;
         color: gray;
         @apply --layout-self-center;
         @apply --chat-message-time;
@@ -53,7 +55,8 @@ Style hooks:
         @apply --layout-horizontal;
       }
       .text {
-        max-width: 90%;
+        overflow-wrap: break-word;
+        max-width: 80%;
         @apply --chat-message-text;
       }
       .text.me {
@@ -69,143 +72,147 @@ Style hooks:
     <paper-dialog-scrollable id="scroller">
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
-          <!-- <div class="time"> -->
           <from-now
             time="[[item.created]]"
             hidden$="[[!_indexesContains(_indexes, index, showAllTimestamps)]]">
           </from-now>
-          <!-- </div> -->
-          <!-- <div class="text-container"> -->
-            <div
-              class$="[[_classForAuthor(item.author)]] text"
-              title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
-          <!-- </div> -->
+          <div
+            class$="[[_classForAuthor(item.author)]] text"
+            title="[[_formatTimestamp(item.created)]]">[[item.text]]</div>
         </div>
       </template>
     </paper-dialog-scrollable>
   </template>
 
   <script>
-  class ChatMessages extends Polymer.Element {
+    /**
+     * `chat-messages`
+     * 
+     *
+     * @customElement
+     * @polymer
+     */
+    class ChatMessages extends Polymer.Element {
 
-    static get is() { return 'chat-messages'; }
+      static get is() { return 'chat-messages'; }
 
-    static get properties() {
-      return {
-        /**
-         * The author is compared to each message's author to determine how that
-         * message should be displayed. If the message's author matches, the
-         * default is to display it using flexbox's self-end alignment.
-         */
-        author: String,
+      static get properties() {
+        return {
+          /**
+           * The author is compared to each message's author to determine how that
+           * message should be displayed. If the message's author matches, the
+           * default is to display it using flexbox's self-end alignment.
+           */
+          author: String,
 
-        /**
-         * The messages array. Each element must have three properties:
-         * * `author`: The message's author
-         * * `text`: The actual message
-         * * `created`: The timestamp in millis the message was sent.
-         */
-        messages: {
-          type: Array,
-          value() { return []; }
-        },
+          /**
+           * The messages array. Each element must have three properties:
+           * * `author`: The message's author
+           * * `text`: The actual message
+           * * `created`: The timestamp in millis the message was sent.
+           */
+          messages: {
+            type: Array,
+            value: function() { return []; }
+          },
 
-        /**
-         * Whether to show a timestamp with every message or just some of them.
-         */
-        showAllTimestamps: {
-          type: Boolean,
-          value: false
-        },
+          /**
+           * Whether to show a timestamp with every message or just some of them.
+           */
+          showAllTimestamps: {
+            type: Boolean,
+            value: false
+          },
 
-        /**
-         * Whether to scroll to the bottom of the message list when a new message arrives.
-         */
-        autoScroll: {
-          type: Boolean,
-          value: true
-        },
+          /**
+           * Whether to scroll to the bottom of the message list when a new message arrives.
+           */
+          autoScroll: {
+            type: Boolean,
+            value: true
+          },
 
-        /**
-         * The date format to use when revealing the actual timestamp.
-         * See https://momentjs.com/docs/#/parsing/string-format/
-         * Examples:
-         *   YYYY-MM-DD HH:mm:ss
-         *   MM/DD/YYYY hh:mm a
-         *   Do of MMM, YYYY at hh:mm a
-         */
-        dateFormat: {
-          type: String,
-          value: 'YYYY-MM-DD HH:mm'
-        }
-      };
-    }
-
-    static get observers() {
-      return [
-        '_messagesChanged(messages.*, showAllTimestamps)'
-      ];
-    }
-    _classForAuthor(author) {
-      return author == this.author ? 'me' : 'not-me';
-    }
-
-    _messagesChanged(changeData, showAllTimestamps) {
-      // console.log('msg changed', changeData);
-      this.debounce('messages-changed', function() {
-        if (changeData && changeData.base && changeData.base.length > 0) {
-          if (this.autoScroll) {
-            this.scrollToBottom();
+          /**
+           * The date format to use when revealing the actual timestamp.
+           * See https://momentjs.com/docs/#/parsing/string-format/
+           * Examples:
+           *   YYYY-MM-DD HH:mm:ss
+           *   MM/DD/YYYY hh:mm a
+           *   Do of MMM, YYYY at hh:mm a
+           */
+          dateFormat: {
+            type: String,
+            value: 'YYYY-MM-DD HH:mm'
           }
-          if (!showAllTimestamps) this._updateTimestampedIndexes(changeData.base);
+        };
+      }
+
+      static get observers() {
+        return [
+          '_messagesChanged(messages.*, showAllTimestamps)'
+        ];
+      }
+
+      _classForAuthor(author) {
+        return author == this.author ? 'me' : 'not-me';
+      }
+
+      _messagesChanged(changeData, showAllTimestamps) {
+        this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
+            Polymer.Async.timeOut.after(250), () => { 
+              if (changeData && changeData.base && changeData.base.length > 0) {
+                if (this.autoScroll) {
+                  this.scrollToBottom();
+                }
+                if (!showAllTimestamps) this._updateTimestampedIndexes(changeData.base);
+              }
+         });
+      }
+
+      _indexesContains(indexes, index, showAllTimestamps) {
+        return showAllTimestamps || (indexes && indexes.includes(index));
+      }
+
+      _updateTimestampedIndexes(messages) {
+        // console.log('updating indexes...', messages)
+        var indexes = [0];
+        var i, age, between, now = Date.now();
+        for (i = 1; i < messages.length; i++) {
+          age = now - messages[i].created;
+          between = messages[i].created - messages[i - 1].created;
+          // console.log('index', i, 'age', age, 'between', between);
+          if (this._shouldBeTimestamped(age, between)) {
+            indexes.push(i);
+          }
         }
-      }.bind(this), 250);
-    }
+        this._indexes = indexes;
+        // console.log('indexes', this._indexes);
+      }
 
-    _indexesContains(indexes, index, showAllTimestamps) {
-      return showAllTimestamps || (indexes && indexes.includes(index));
-    }
-
-    _updateTimestampedIndexes(messages) {
-      // console.log('updating indexes...', messages)
-      var indexes = [0];
-      var i, age, between, now = Date.now();
-      for (i = 1; i < messages.length; i++) {
-        age = now - messages[i].created;
-        between = messages[i].created - messages[i - 1].created;
-        // console.log('index', i, 'age', age, 'between', between);
-        if (this._shouldBeTimestamped(age, between)) {
-          indexes.push(i);
+      _shouldBeTimestamped(age, between) {
+        if (age < 60 * 60 * 1000) {                  // If less than one hour old,
+          return between > 5 * 60 * 1000;            // show every 5 minutes.
+        } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
+          return between > 60 * 60 * 1000;           // show every hour.
+        } else if (age < 7 * 24 * 60 * 60 * 1000) {  // If less than a week old,
+          return between > 4 * 60 * 60 * 1000;       // show every four hours.
+        } else {                                     // If a week or older,
+          return between > 24 * 60 * 60 * 1000;      // show once per day.
         }
       }
-      this._indexes = indexes;
-      // console.log('indexes', this._indexes);
-    }
 
-    _shouldBeTimestamped(age, between) {
-      if (age < 60 * 60 * 1000) {                  // If less than one hour old,
-        return between > 5 * 60 * 1000;            // show every 5 minutes.
-      } else if (age < 24 * 60 * 60 * 1000) {      // If less than one day old,
-        return between > 60 * 60 * 1000;           // show every hour.
-      } else if (age < 7 * 24 * 60 * 60 * 1000) {  // If less than a week old,
-        return between > 4 * 60 * 60 * 1000;       // show every four hours.
-      } else {                                     // If a week or older,
-        return between > 24 * 60 * 60 * 1000;      // show once per day.
+      _formatTimestamp(time) {
+        return moment(time).format(this.dateFormat);
       }
-    }
 
-    _formatTimestamp(time) {
-      return moment(time).format(this.dateFormat);
-    }
-
-    scrollToBottom() {
-      setTimeout(function() {
-        var target = this.$.scroller.scrollTarget;
-        target.scrollTop = target.scrollHeight;
+      scrollToBottom() {
+        setTimeout(function() {
+          var target = this.$.scroller.scrollTarget;
+          target.scrollTop = target.scrollHeight;
       }.bind(this), 100);
     }
-  }
+    }
 
-  window.customElements.define(ChatMessages.is, ChatMessages);
+    window.customElements.define(ChatMessages.is, ChatMessages);
   </script>
 </dom-module>

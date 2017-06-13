@@ -4,17 +4,21 @@
     <title>chat-window demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <!-- load polyfills -->
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
+    <!-- import CSS mixin shim -->
+    <link rel="import" href="../../shadycss/apply-shim.html">
+    <!-- import custom-style -->
+    <link rel="import" href="../../polymer/lib/elements/custom-style.html">
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../shadycss/apply-shim.html">
     <link rel="import" href="../chat-window.html">
     <link rel="import" href="../chat-messages.html">
     <link rel="import" href="../chat-input.html">
+
     <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-    </style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
     </custom-style>
   </head>
   <body>
@@ -55,22 +59,21 @@
         <dom-bind>
         <template is="dom-bind" id="scope">
           <custom-style>
-          <style is="custom-style">
-            chat-window.styled {
-                font-size: small;
-                --chat-messages-height: 12em;
-                --paper-input-container-input: {
-                  margin: 0 2px;
+            <style is="custom-style">
+              chat-window.styled {
+                  font-size: small;
+                  --chat-messages-height: 12em;
+                  --paper-input-container-input: {
+                    margin: 0 2px;
+                  }
+                  --chat-message-text: {
+                    background-color: #f0f0f0;
+                    padding: 6px 8px;
+                    margin: 4px 0;
+                    border-radius: 6px;
+                  };
                 }
-                --chat-message-text: {
-                  background-color: #f0f0f0;
-                  padding: 6px 8px;
-                  margin: 4px 0;
-                  border-radius: 6px;
-                };
-              }
-            }
-          </style>
+            </style>
           </custom-style>
           <chat-window
             class="styled"
@@ -80,7 +83,8 @@
             messages="[[messages]]"
             on-send="sendMsg"></chat-window>
           <script>
-            var scope = document.getElementById('scope');
+            // var scope = document.getElementById('scope');
+            var scope = document.querySelector('dom-bind');
 
             var now = Date.now();
             scope.messages = [
@@ -124,55 +128,55 @@
         <dom-bind>
         <template is="dom-bind" id="scope3">
           <custom-style>
-          <style is="custom-style">
-            chat-window.styled-bad {
+            <style is="custom-style">
+              chat-window.styled-bad {
 
-              --chat-window: {
-                border: 3px dashed green;
-              };
-              --chat-window-input: {
-                background-color: #aaf;
-              };
-
-
-              --chat-messages-height: 8em;
-              --chat-messages-scroller: {
-                background-color: yellow;
-                border: 3px inset red;
-              };
-              --chat-message: {
-                background-color: pink;
-                margin: 2px;
-              };
-              --chat-message-time: {
-                background-color: orange;
-              };
-              --chat-message-text: {
-                font-style: italic;
-              };
-              --chat-message-text-me: {
-                font-weight: bold;
-              };
-              --chat-message-text-not-me: {
-                color: gray;
-              };
+                --chat-window: {
+                  border: 3px dashed green;
+                };
+                --chat-window-input: {
+                  background-color: #aaf;
+                };
 
 
-              --chat-input-input: {
-                background-color: magenta;
-                margin: 4px;
+                --chat-messages-height: 8em;
+                --chat-messages-scroller: {
+                  background-color: yellow;
+                  border: 3px inset red;
+                };
+                --chat-message: {
+                  background-color: pink;
+                  margin: 2px;
+                };
+                --chat-message-time: {
+                  background-color: orange;
+                };
+                --chat-message-text: {
+                  font-style: italic;
+                };
+                --chat-message-text-me: {
+                  font-weight: bold;
+                };
+                --chat-message-text-not-me: {
+                  color: gray;
+                };
+
+
+                --chat-input-input: {
+                  background-color: magenta;
+                  margin: 4px;
+                }
+                --paper-input-container-input: {
+                  font-size: small;
+                  margin: 0 2px;
+                }
+                --chat-input-button: {
+                  color: cyan;
+                  height: 48px;
+                  width: 48px;
+                }
               }
-              --paper-input-container-input: {
-                font-size: small;
-                margin: 0 2px;
-              }
-              --chat-input-button: {
-                color: cyan;
-                height: 48px;
-                width: 48px;
-              }
-            }
-          </style>
+            </style>
           </custom-style>
           <chat-window
             class="styled-bad"
