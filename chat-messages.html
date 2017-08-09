@@ -2,14 +2,13 @@
 <link rel="import" href="../from-now/from-now.html">
 <link rel="import" href="../from-now/moment-import.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 
 <!--
 CSS custom property | Description | Default
 ------------------- | ----------- | -------
-`--chat-messages-scroller` | Applied to the paper-dialog-scrollable | {}
+`--chat-messages-scroller` | Applied to the scrollable div | {}
 `--chat-message` | Applied to the container of each message | {}
 `--chat-message-time` | Applied to each timestamp shown | {}
 `--chat-message-text` | Applied to the text of each message | {}
@@ -22,8 +21,10 @@ CSS custom property | Description | Default
       :host {
         display: block;
       }
-      paper-dialog-scrollable {
+      #scroller {
         height: var(--chat-messages-height, 5em);
+        overflow: auto;
+        padding-right: 4px;
         @apply --chat-messages-scroller;
       }
       .message {
@@ -79,7 +80,7 @@ CSS custom property | Description | Default
       }
     </style>
 
-    <paper-dialog-scrollable id="scroller">
+    <div id="scroller">
       <template is="dom-repeat" items="[[messages]]">
         <div class="message">
           <from-now
@@ -100,7 +101,7 @@ CSS custom property | Description | Default
           </div>
         </div>
       </template>
-    </paper-dialog-scrollable>
+    </div>
   </template>
 
   <script>
@@ -244,8 +245,11 @@ CSS custom property | Description | Default
 
       scrollToBottom: function() {
         setTimeout(function() {
-          var target = this.$.scroller.scrollTarget;
+          var target = this.$.scroller;
           target.scrollTop = target.scrollHeight;
+          if (target.scrollTop != target.scrollHeight) {
+            console.debug('Failed to set scrollTop on target');
+          }
         }.bind(this), 100);
       },
 

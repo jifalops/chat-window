@@ -4,9 +4,9 @@
 The easiest way to have a chat.
 
 ## Installation
-
 ```
-bower install --save chat-window
+bower i -S chat-window        # Polymer 2.0 hybrid (1.x compatible)
+bower i -S chat-window#0.5.0  # Polymer 1.x based
 ```
 
 ## Usage
@@ -37,9 +37,9 @@ Mouse-over messages to see the absolute timestamp.
           padding: 6px 8px;
           margin: 4px 0;
           border-radius: 6px;
-        };    
+        };
       }
-    </style>          
+    </style>
     <script>
       var now = Date.now();
       var messages = [
@@ -73,7 +73,7 @@ Mouse-over messages to see the absolute timestamp.
   single-line>
 </chat-window>
 <script>
-  var chat = document.getElementById('chat');  
+  var chat = document.getElementById('chat');
   var author;
   chat.messages = messages;
   chat.addEventListener('send', function(e) {
@@ -84,7 +84,7 @@ Mouse-over messages to see the absolute timestamp.
       created: Date.now()
     });
     chat.inputText = '';
-  });  
+  });
 </script>
 ```
 
