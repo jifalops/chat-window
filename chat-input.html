@@ -6,20 +6,11 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <!--
-`chat-window`
-A simple and flexible chat window for listing messages.
-
-Style hooks:
-
-* `--chat-input-input` Applied to the paper-input and paper-textarea, depending on
-the state of the `singleLine` property.
-
-* `--chat-input-button` Appied to the paper-icon-button
-
-
-@demo demo/index.html
+CSS custom property | Description | Default
+------------------- | ----------- | -------
+`--chat-input-input` | Applied to the internal input field | {}
+`--chat-input-button` | Appied to the paper-icon-button | {}
 -->
-
 <dom-module id="chat-input">
   <template>
     <style>
@@ -53,6 +44,14 @@ the state of the `singleLine` property.
   </template>
 
   <script>
+    /**
+     * `chat-input`
+     * Single or multi-line input field for `chat-window`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
     Polymer({
 
       is: 'chat-input',

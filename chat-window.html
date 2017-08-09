@@ -3,20 +3,14 @@
 <link rel="import" href="chat-input.html">
 
 <!--
-`chat-window`
-A simple and flexible chat window for listing messages.
+CSS custom property | Description | Default
+------------------- | ----------- | -------
+`--chat-window` | Applied to the chat-window container | {}
+`--chat-window-messages` | Applied to the `chat-messages` element | {}
+`--chat-window-input` | Applied to the chat-input element | {}
 
-```
-Style hooks:
-
---chat-window Applied to the chat-window container.
-
---chat-window-input Applied to the chat-input element.
-```
-
-@demo demo/index.html
+See `chat-messages` and `chat-input` for additional property mixins.
 -->
-
 <dom-module id="chat-window">
   <template>
     <style>
@@ -27,7 +21,7 @@ Style hooks:
         @apply --chat-window;
       }
       chat-messages {
-        /*@apply --chat-window-messages;*/
+        @apply --chat-window-messages;
       }
       chat-input {
         @apply --chat-window-input;
@@ -55,6 +49,14 @@ Style hooks:
   </template>
 
   <script>
+    /**
+     * `chat-window`
+     * A simple and flexible chat window for listing messages.
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
     Polymer({
 
       is: 'chat-window',

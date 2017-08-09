@@ -2,9 +2,10 @@
   "name": "chat-window",
   "description": "A simple and flexible chat window for listing messages.",
   "main": "chat-window.html",
+  "authors": ["Jacob Phillips (https://github.com/jifalops) <jifalops@gmail.com>"],
   "license": "MIT",
   "keywords": [
-    "web-components",
+    "polymer",
     "chat-window",
     "chat",
     "window",

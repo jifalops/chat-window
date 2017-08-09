@@ -5,26 +5,15 @@
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 
 <!--
-`chat-window`
-A simple and flexible chat window for listing messages.
-
-Style hooks:
-
-* `--chat-messages-scroller` Applied to the paper-dialog-scrollable.
-
-* `--chat-message`  Applied to the container of each message.
-
-* `--chat-message-time`  Applied to each timestamp shown.
-
-* `--chat-message-text`  Applied to the text of each message.
-
-* `--chat-message-text-me` Applied to the current user's messages.
-
-* `--chat-message-text-not-me` Applied to the other users' messages.
-
-@demo demo/index.html
+CSS custom property | Description | Default
+------------------- | ----------- | -------
+`--chat-messages-scroller` | Applied to the paper-dialog-scrollable | {}
+`--chat-message` | Applied to the container of each message | {}
+`--chat-message-time` | Applied to each timestamp shown | {}
+`--chat-message-text` | Applied to the text of each message | {}
+`--chat-message-text-me` | Applied to the current author's messages | {}
+`--chat-message-text-not-me` | Applied to other users' messages | {}
 -->
-
 <dom-module id="chat-messages">
   <template>
     <style>
@@ -86,6 +75,14 @@ Style hooks:
   </template>
 
   <script>
+    /**
+     * `chat-messages`
+     * Scrolling container of messages.
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
     Polymer({
 
       is: 'chat-messages',
