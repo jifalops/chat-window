@@ -32,6 +32,9 @@ See `chat-messages` and `chat-input` for additional property mixins.
       <slot name="chat-header"></slot>
       <chat-messages
         author="[[author]]"
+        author-icon="[[authorIcon]]"
+        others-icons="[[othersIcons]]"
+        default-icon="[[defaultIcon]]"
         messages="[[messages]]"
         date-format="[[dateFormat]]"
         auto-scroll="[[autoScroll]]">
@@ -123,6 +126,7 @@ See `chat-messages` and `chat-input` for additional property mixins.
 
         /**
          * The date format to use when revealing the actual timestamp.
+         * The default behavior is to use momentjs's `calendar` function.
          * See https://momentjs.com/docs/#/parsing/string-format/
          * Examples:
          *   YYYY-MM-DD HH:mm:ss
@@ -131,7 +135,26 @@ See `chat-messages` and `chat-input` for additional property mixins.
          */
         dateFormat: {
           type: String,
-          value: 'ddd, MMM D, YYYY h:mm a'
+          // value: 'ddd, MMM D, YYYY h:mm a'
+        },
+
+        /**
+        * The iron-icon's `icon` or a URL to use as the iron-icon's `src`.
+        */
+        authorIcon: {
+          type: String,
+          value: 'account-circle'
+        },
+        /**
+         * Icons for other authors. Maps each author to an icon or URL.
+         */
+        othersIcons: Object,
+        /**
+         * The default icon/url to use when one isn't defined for an author.
+         */
+        defaultIcon: {
+          type: String,
+          value: 'face'
         }
       },
 

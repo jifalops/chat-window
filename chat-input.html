@@ -104,7 +104,7 @@ CSS custom property | Description | Default
       },
 
       _iconIsUrl: function(icon) {
-        return icon && icon.indexOf('/') !== -1;
+        return icon && (icon.includes('/') || icon.includes('.'));
       },
 
       _checkForEnter: function (e) {
@@ -115,7 +115,7 @@ CSS custom property | Description | Default
       }
 
       /**
-       * Triggered when a user taps the send button.
+       * Triggered when a user taps the send button. The text may be empty.
        * @event send
        * @param {text} string The message to be sent.
        */
