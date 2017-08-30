@@ -81,22 +81,24 @@ CSS custom property | Description | Default
     </style>
 
     <div id="scroller">
-      <template is="dom-repeat" items="[[messages]]">
+      <template is="dom-repeat" items="[[messages]]" as="msg">
         <div class="message">
           <from-now
-            time="[[item.created]]"
+            time="[[msg.created]]"
             idle="[[!_indexesContains(_indexes, index, showAllTimestamps)]]"
             hidden$="[[!_indexesContains(_indexes, index, showAllTimestamps)]]">
           </from-now>
-          <div class$="[[_classForAuthor(item.author)]] text-container">
+          <div class$="[[_classForAuthor(msg.author)]] text-container">
 		        <iron-icon
-              icon="[[_getIcon(item.author)]]"
-              src="[[_getSrc(item.author)]]">
+              icon="[[_getIcon(msg.author)]]"
+              src="[[_getSrc(msg.author)]]">
             </iron-icon>
             <div
               class="text"
-              title="[[_formatTimestamp(item.created)]]">
-              [[item.text]]
+              title="[[_formatTimestamp(msg.created)]]">
+              <template is="dom-repeat" items="[[_messageLines(msg.text)]]">
+                [[item]]<br/>
+              </template>
             </div>
           </div>
         </div>
@@ -276,6 +278,10 @@ CSS custom property | Description | Default
       _iconIsUrl: function(icon) {
         return icon && (icon.includes('/') || icon.includes('.'));
       },
+      _messageLines: function(msg) {
+        if (!msg) return [];
+        return msg.trim().split(/\r?\n/);
+      }
     });
   </script>
 </dom-module>
